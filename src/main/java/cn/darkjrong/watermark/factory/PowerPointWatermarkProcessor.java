@@ -22,7 +22,7 @@ public class PowerPointWatermarkProcessor extends AbstractWatermarkProcessor {
 
 	@Override
 	public Boolean supportType(File file) {
-		return FileTypeUtils.isPptx(file) || FileTypeUtils.isPpt(file);
+		return FileTypeUtils.isPpts(file);
 	}
 
 	@Override

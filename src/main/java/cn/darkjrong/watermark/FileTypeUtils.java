@@ -274,6 +274,16 @@ public class FileTypeUtils {
 	}
 
 	/**
+	 *  是否是PPT,PPTX文件
+	 *
+	 * @param file 文件
+	 * @return {@link Boolean}
+	 */
+	public static Boolean isPpts(File file){
+		return isPpt(file) || isPptx(file);
+	}
+
+	/**
 	 * 是否是 Word 或 Excel 文件
 	 *
 	 * @param file 文件
