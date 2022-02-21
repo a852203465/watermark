@@ -47,20 +47,27 @@ public class WatermarkUtils {
      * 添加水印
      *
      * @param watermarkParam 水印参数
+     * @param outputFile     输出文件
      * @throws WatermarkException 水印异常
      */
-    public static void addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
+    public static void addWatermark(WatermarkParam watermarkParam, File outputFile) throws WatermarkException {
+        FileUtil.writeBytes(addWatermark(watermarkParam), outputFile);
+    }
 
+    /**
+     * 添加水印
+     *
+     * @param watermarkParam 水印参数
+     * @throws WatermarkException 水印异常
+     */
+    public static byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
         File file = watermarkParam.getFile();
-
         WatermarkProcessor processor = processors.stream().filter(a -> a.supportType(file)).findAny().orElse(null);
         if (ObjectUtil.isNull(processor)) {
             throw new WatermarkException("不支持文件格式为 " + FileTypeUtils.getFileType(file) + " 的水印处理");
         }
-
         handlerWatermarkFile(watermarkParam);
-
-        processor.process(watermarkParam);
+        return processor.addWatermark(watermarkParam);
     }
 
     /**

@@ -17,10 +17,22 @@ public interface WatermarkProcessor {
      * 添加水印
      *
      * @param watermarkParam 水印参数
+     * @param target         目标文件
      * @throws WatermarkException 水印异常
      */
-    default void process(WatermarkParam watermarkParam) throws WatermarkException {
+    default void addWatermark(WatermarkParam watermarkParam, File target) throws WatermarkException {
 
+    }
+
+    /**
+     * 添加水印
+     *
+     * @param watermarkParam 水印参数
+     * @return {@link byte[]}
+     * @throws WatermarkException 水印异常
+     */
+    default byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
+        return null;
     }
 
     /**
@@ -32,7 +44,6 @@ public interface WatermarkProcessor {
     default Boolean supportType(File file) {
         return Boolean.FALSE;
     }
-
 
 
 

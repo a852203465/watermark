@@ -1,15 +1,17 @@
 package cn.darkjrong.watermark.factory;
 
 import cn.darkjrong.watermark.FileTypeUtils;
-import cn.darkjrong.watermark.LicenseUtils;
 import cn.darkjrong.watermark.domain.WatermarkParam;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import com.aspose.words.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 /**
@@ -28,13 +30,15 @@ public class WordWatermarkProcessor extends AbstractWatermarkProcessor {
     }
 
     @Override
-    public void process(WatermarkParam watermarkParam) throws WatermarkException {
+    public void addWatermark(WatermarkParam watermarkParam, File target) throws WatermarkException {
+        FileUtil.writeBytes(this.addWatermark(watermarkParam), target);
+    }
 
-        LicenseUtils.verificationLicense();
-
+    @Override
+    public byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
+        ByteArrayOutputStream outputStream = null;
         try {
-            File file = watermarkParam.getFile();
-            Document doc = new Document(file.getPath());
+            Document doc = new Document(getInputStream(watermarkParam.getFile()));
             if (!watermarkParam.getBespread()) {
                 Shape shape = buildShape(doc, watermarkParam);
                 Paragraph watermarkPara = new Paragraph(doc);
@@ -50,14 +54,16 @@ public class WordWatermarkProcessor extends AbstractWatermarkProcessor {
                 }
                 insertWatermark(doc, watermarkPara);
             }
-
-            doc.save(file.getPath());
+            outputStream = new ByteArrayOutputStream();
+            doc.save(outputStream, SaveFormat.DOCX);
+            return outputStream.toByteArray();
         }catch (Exception e) {
             logger.error("WordWatermarkProcessor {}", e.getMessage());
             throw new WatermarkException(e.getMessage());
+        }finally {
+            IoUtil.close(outputStream);
         }
     }
-
 
     /**
      * 插入水印

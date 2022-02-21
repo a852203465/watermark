@@ -5,6 +5,7 @@ import cn.darkjrong.watermark.domain.WatermarkParam;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Rectangle;
 import com.itextpdf.text.pdf.PdfContentByte;
@@ -14,9 +15,8 @@ import com.itextpdf.text.pdf.PdfStamper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 
 /**
  * pdf处理器
@@ -34,18 +34,20 @@ public class PdfWatermarkProcessor extends AbstractWatermarkProcessor {
     }
 
     @Override
-    public void process(WatermarkParam watermarkParam) throws WatermarkException {
+    public void addWatermark(WatermarkParam watermarkParam, File target) throws WatermarkException {
+        FileUtil.writeBytes(this.addWatermark(watermarkParam), target);
+    }
 
-        super.process(watermarkParam);
+    @Override
+    public byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
 
         PdfReader reader = null;
         PdfStamper stamper = null;
-
+        ByteArrayOutputStream outputStream = null;
         try {
-            File file = watermarkParam.getFile();
-            reader = new PdfReader(new FileInputStream(file));
-            stamper = new PdfStamper(reader, new FileOutputStream(file));
-
+            outputStream = new ByteArrayOutputStream();
+            reader = new PdfReader(getInputStream(watermarkParam.getFile()));
+            stamper = new PdfStamper(reader, outputStream);
             int pageNo = reader.getNumberOfPages();
 
             // image watermark
@@ -78,7 +80,6 @@ public class PdfWatermarkProcessor extends AbstractWatermarkProcessor {
 //                    over.addImage(img, w, 0, 0, h, x - (w / 2), y - (h / 2));
                     over.addImage(img, w, 0, 0, h, watermarkParam.getXMove(), watermarkParam.getYMove());
                 }else {
-
                     for (int height = watermarkParam.getYMove() + imgH;
                          height < pageRect.getHeight();
                          height = height + imgH * 3) {
@@ -90,20 +91,34 @@ public class PdfWatermarkProcessor extends AbstractWatermarkProcessor {
                         }
                     }
                 }
-
                 over.restoreState();
             }
-
-            if (stamper!=null) {
-                stamper.close();
-            }
+            stamper.close();
+            return outputStream.toByteArray();
         }catch (Exception e) {
             logger.error("Description Failed to add watermark to PDF :  {}", e.getMessage());
+            throw new WatermarkException(e.getMessage());
         }finally {
             if (reader!=null) {
                 reader.close();
             }
+            IoUtil.close(outputStream);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 }

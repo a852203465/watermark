@@ -35,7 +35,7 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.7.5</version>
+            <version>5.7.20</version>
         </dependency>
 
         <dependency>
@@ -43,18 +43,11 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.76</version>
         </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>org.apache.poi</groupId>-->
-<!--            <artifactId>poi</artifactId>-->
-<!--            <version>4.1.2</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
@@ -65,29 +58,6 @@
             <artifactId>poi-scratchpad</artifactId>
             <version>4.1.2</version>
         </dependency>
-
-<!--        <dependency>-->
-<!--            <groupId>org.apache.poi</groupId>-->
-<!--            <artifactId>ooxml-schemas</artifactId>-->
-<!--            <version>1.4</version>-->
-<!--           &lt;!&ndash; <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <artifactId>xmlbeans</artifactId>-->
-<!--                    <groupId>org.apache.xmlbeans</groupId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>&ndash;&gt;-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.poi</groupId>-->
-<!--            <artifactId>poi-ooxml-schemas</artifactId>-->
-<!--            <version>4.1.2</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.pdfbox</groupId>-->
-<!--            <artifactId>pdfbox</artifactId>-->
-<!--            <version>2.0.16</version>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>org.docx4j</groupId>
             <artifactId>docx4j</artifactId>

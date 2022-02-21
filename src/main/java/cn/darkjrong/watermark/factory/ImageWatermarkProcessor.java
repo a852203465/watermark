@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 /**
@@ -29,17 +30,16 @@ public class ImageWatermarkProcessor extends AbstractWatermarkProcessor {
 	}
 
 	@Override
-	public void process(WatermarkParam watermarkParam) throws WatermarkException {
+	public void addWatermark(WatermarkParam watermarkParam, File targetFile) throws WatermarkException {
+		FileUtil.writeBytes(this.addWatermark(watermarkParam), targetFile);
+	}
 
-		super.process(watermarkParam);
-
+	@Override
+	public byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
+		ByteArrayOutputStream outputStream = null;
 		try {
-
-			File file = watermarkParam.getFile();
-
-			Image srcImage = ImageIO.read(file);
-			BufferedImage bufferImg = new BufferedImage(srcImage.getWidth(null),
-					srcImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
+			Image srcImage = ImageIO.read(watermarkParam.getFile());
+			BufferedImage bufferImg = new BufferedImage(srcImage.getWidth(null), srcImage.getHeight(null), BufferedImage.TYPE_INT_RGB);
 
 			// 1、得到画笔对象
 			Graphics2D g = bufferImg.createGraphics();
@@ -72,12 +72,11 @@ public class ImageWatermarkProcessor extends AbstractWatermarkProcessor {
 					}
 				}
 			}
-
 			g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
-
 			g.dispose();
-			ImageIO.write(bufferImg, FileUtil.extName(file.getName()), file);
-
+			outputStream = new ByteArrayOutputStream();
+			ImageIO.write(bufferImg, FileUtil.extName(watermarkParam.getFile()), outputStream);
+			return outputStream.toByteArray();
 		}catch (Exception e) {
 			logger.error("Failed to add watermark to the image {}", e.getMessage());
 			throw new WatermarkException(e.getMessage());
@@ -85,7 +84,6 @@ public class ImageWatermarkProcessor extends AbstractWatermarkProcessor {
 			try {
 				FileUtil.del(watermarkParam.getImageFile());
 			}catch (Exception ignored){}
-
 		}
 	}
 }

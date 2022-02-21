@@ -1,6 +1,5 @@
 package cn.darkjrong.watermark.factory;
 
-import cn.darkjrong.watermark.Converter;
 import cn.darkjrong.watermark.FileTypeUtils;
 import cn.darkjrong.watermark.domain.WatermarkParam;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
@@ -8,9 +7,14 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import org.apache.poi.sl.usermodel.PictureData.PictureType;
 import org.apache.poi.xslf.usermodel.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.awt.geom.Rectangle2D;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * ppt处理器
@@ -20,27 +24,24 @@ import java.io.*;
  */
 public class PowerPointWatermarkProcessor extends AbstractWatermarkProcessor {
 
+	private static final Logger logger = LoggerFactory.getLogger(PowerPointWatermarkProcessor.class);
+
 	@Override
 	public Boolean supportType(File file) {
 		return FileTypeUtils.isPpts(file);
 	}
 
 	@Override
-	public void process(WatermarkParam watermarkParam) throws WatermarkException {
+	public void addWatermark(WatermarkParam watermarkParam, File target) throws WatermarkException {
+		FileUtil.writeBytes(this.addWatermark(watermarkParam), target);
+	}
 
+	@Override
+	public byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
 		XMLSlideShow pptx = null;
-		FileOutputStream output = null;
-		InputStream inputStream = null;
-		File file = null;
+		ByteArrayOutputStream output = null;
 		try {
-
-			file = watermarkParam.getFile();
-			if (FileTypeUtils.isPpt(file)) {
-				file = FileUtil.writeBytes(Converter.ppt2Pptx(file), file.getPath() + "x");
-			}
-
-			inputStream = new FileInputStream(file);
-			pptx = new XMLSlideShow(inputStream);
+			pptx = new XMLSlideShow(getInputStream(watermarkParam.getFile()));
 			XSLFPictureData pictureData = pptx.addPicture(watermarkParam.getImageFile(), PictureType.PNG);
 			for (int i=0;i<pptx.getSlideMasters().size();i++) {
 				XSLFSlideMaster slideMaster = pptx.getSlideMasters().get(i);
@@ -50,25 +51,18 @@ public class PowerPointWatermarkProcessor extends AbstractWatermarkProcessor {
 					pictureShape.setAnchor(new Rectangle2D.Double(20, 20, 640, 400));
 				}
 			}
-			output = new FileOutputStream(file);
+			output = new ByteArrayOutputStream();
 			pptx.write(output);
-
-			if (FileTypeUtils.isPpt(file)) {
-				FileUtil.writeBytes(Converter.pptx2Ppt(file), watermarkParam.getFile());
-			}
+			return output.toByteArray();
 		} catch (FileNotFoundException e) {
-			throw new WatermarkException("FileNotFoundException", e);
+			logger.error("No file found {}", e.getMessage());
+			throw new WatermarkException(e.getMessage());
 		} catch (IOException e) {
-			throw new WatermarkException("IOException", e);
+			logger.error("A watermark is incorrectly added to the PPT {}", e.getMessage());
+			throw new WatermarkException(e.getMessage());
 		} finally {
 			IoUtil.close(output);
 			IoUtil.close(pptx);
-			IoUtil.close(inputStream);
-			if (FileTypeUtils.isPpt(file)) {
-				try {
-					FileUtil.del(file);
-				}catch (Exception ignored){}
-			}
 		}
 	}
 }

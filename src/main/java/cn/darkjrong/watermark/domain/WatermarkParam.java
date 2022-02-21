@@ -64,15 +64,12 @@ public class WatermarkParam {
      */
     private Boolean bespread = Boolean.FALSE;
 
-    private static WatermarkParam watermarkParam;
-
     /**
      * 构建器
      * @return {@link WatermarkParam}  构建器对象
      */
     public static WatermarkParam builder() {
-        watermarkParam = new WatermarkParam();
-        return watermarkParam;
+        return new WatermarkParam();
     }
 
     public WatermarkParam file(File file) {
@@ -121,7 +118,7 @@ public class WatermarkParam {
     }
 
     public WatermarkParam bespread(Boolean bespread) {
-        watermarkParam.bespread = bespread;
+        this.bespread = bespread;
         return this;
     }
 
@@ -130,9 +127,7 @@ public class WatermarkParam {
      * @return WatermarkParam
      */
     public WatermarkParam build() {
-        WatermarkParam param = watermarkParam;
-        watermarkParam = null;
-        return param;
+        return this;
     }
 
 

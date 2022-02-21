@@ -12,7 +12,7 @@ public class WatermarkProcessorTest {
     @Test
     public void image() throws WatermarkException {
 
-        File file = new File("F:\\4k性感美女图片_3 - 副本.jpg");
+        File file = new File("F:\\test\\1.jpg");
         File imageFile = new File("F:\\1 - 副本.jpeg");
 
         WatermarkParam param = WatermarkParam.builder()
@@ -27,15 +27,14 @@ public class WatermarkProcessorTest {
                 .color(Color.red)
                 .build();
 
-
-        WatermarkUtils.addWatermark(param);
+        WatermarkUtils.addWatermark(param, new File("F:\\test\\tesa1.jpeg"));
 
     }
 
     @Test
     public void pdf() throws Exception {
 
-        File file = new File("F:\\v3.0-JavaGuide面试突击版 - 副本.pdf");
+        File file = new File("F:\\test\\技术面试常见智力题.pdf");
         File imageFile = new File("F:\\3 - 副本.jpeg");
 
         WatermarkParam param = WatermarkParam.builder()
@@ -50,7 +49,8 @@ public class WatermarkProcessorTest {
                 .bespread(Boolean.TRUE)
                 .color(Color.red).build();
 
-        WatermarkUtils.addWatermark(param);
+        WatermarkUtils.addWatermark(param, new File("F:\\test\\1.pdf"));
+
 
     }
 
