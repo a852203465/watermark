@@ -57,7 +57,7 @@ public class WatermarkProcessorTest {
     @Test
     public void excel() throws WatermarkException {
 
-        File file = new File("F:\\xls.xls");
+        File file = new File("F:\\test\\demo.xlsx");
 
         WatermarkParam param = WatermarkParam.builder()
                 .file(file)
@@ -72,7 +72,7 @@ public class WatermarkProcessorTest {
                 .color(Color.red).build();
 
 
-        WatermarkUtils.addWatermark(param);
+        WatermarkUtils.addWatermark(param, new File("F:\\\\test\\\\dem1o.xlsx"));
 
 
     }

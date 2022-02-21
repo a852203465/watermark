@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 
 /**
  * pdf处理器
@@ -44,9 +45,11 @@ public class PdfWatermarkProcessor extends AbstractWatermarkProcessor {
         PdfReader reader = null;
         PdfStamper stamper = null;
         ByteArrayOutputStream outputStream = null;
+        InputStream inputStream = null;
         try {
             outputStream = new ByteArrayOutputStream();
-            reader = new PdfReader(getInputStream(watermarkParam.getFile()));
+            inputStream = getInputStream(watermarkParam.getFile());
+            reader = new PdfReader(inputStream);
             stamper = new PdfStamper(reader, outputStream);
             int pageNo = reader.getNumberOfPages();
 
@@ -103,6 +106,7 @@ public class PdfWatermarkProcessor extends AbstractWatermarkProcessor {
                 reader.close();
             }
             IoUtil.close(outputStream);
+            IoUtil.close(inputStream);
         }
 
 

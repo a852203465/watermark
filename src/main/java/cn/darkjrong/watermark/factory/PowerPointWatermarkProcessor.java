@@ -11,10 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.geom.Rectangle2D;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * ppt处理器
@@ -40,8 +37,10 @@ public class PowerPointWatermarkProcessor extends AbstractWatermarkProcessor {
 	public byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
 		XMLSlideShow pptx = null;
 		ByteArrayOutputStream output = null;
+		InputStream inputStream = null;
 		try {
-			pptx = new XMLSlideShow(getInputStream(watermarkParam.getFile()));
+			inputStream = getInputStream(watermarkParam.getFile());
+			pptx = new XMLSlideShow(inputStream);
 			XSLFPictureData pictureData = pptx.addPicture(watermarkParam.getImageFile(), PictureType.PNG);
 			for (int i=0;i<pptx.getSlideMasters().size();i++) {
 				XSLFSlideMaster slideMaster = pptx.getSlideMasters().get(i);
@@ -63,6 +62,7 @@ public class PowerPointWatermarkProcessor extends AbstractWatermarkProcessor {
 		} finally {
 			IoUtil.close(output);
 			IoUtil.close(pptx);
+			IoUtil.close(inputStream);
 		}
 	}
 }

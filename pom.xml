@@ -117,14 +117,6 @@
             <artifactId>tika-core</artifactId>
             <version>2.1.0</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.artofsolving.jodconverter</groupId>
-            <artifactId>jodconverter-core</artifactId>
-            <version>3.0-beta-4</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/libs/jodconverter-core-3.0-beta-4.jar</systemPath>
-        </dependency>
         <dependency>
             <groupId>com.aspose</groupId>
             <artifactId>aspose-words</artifactId>

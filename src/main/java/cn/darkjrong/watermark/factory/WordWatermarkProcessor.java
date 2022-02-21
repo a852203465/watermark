@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 
 /**
  * 文字处理器
@@ -37,8 +38,10 @@ public class WordWatermarkProcessor extends AbstractWatermarkProcessor {
     @Override
     public byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
         ByteArrayOutputStream outputStream = null;
+        InputStream inputStream = null;
         try {
-            Document doc = new Document(getInputStream(watermarkParam.getFile()));
+            inputStream = getInputStream(watermarkParam.getFile());
+            Document doc = new Document(inputStream);
             if (!watermarkParam.getBespread()) {
                 Shape shape = buildShape(doc, watermarkParam);
                 Paragraph watermarkPara = new Paragraph(doc);
@@ -62,6 +65,7 @@ public class WordWatermarkProcessor extends AbstractWatermarkProcessor {
             throw new WatermarkException(e.getMessage());
         }finally {
             IoUtil.close(outputStream);
+            IoUtil.close(inputStream);
         }
     }
 
