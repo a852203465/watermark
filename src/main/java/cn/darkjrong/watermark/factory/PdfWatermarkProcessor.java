@@ -57,7 +57,6 @@ public class PdfWatermarkProcessor extends AbstractWatermarkProcessor {
             imageStamp.setHeight(srcImage.getWidth(null));
             imageStamp.setWidth(srcImage.getHeight(null));
             imageStamp.setOpacity(1 - watermarkParam.getAlpha());
-            imageStamp.setRotate(Convert.toInt(watermarkParam.getDegree()));
 
             for (int i = 1; i <= pdfDocument.getPages().size(); i++) {
                 Page page = pdfDocument.getPages().get_Item(i);
