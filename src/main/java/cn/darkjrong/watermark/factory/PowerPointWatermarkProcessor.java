@@ -63,6 +63,9 @@ public class PowerPointWatermarkProcessor extends AbstractWatermarkProcessor {
 			IoUtil.close(output);
 			IoUtil.close(pptx);
 			IoUtil.close(inputStream);
+			try {
+				FileUtil.del(watermarkParam.getImageFile());
+			}catch (Exception ignored){}
 		}
 	}
 }

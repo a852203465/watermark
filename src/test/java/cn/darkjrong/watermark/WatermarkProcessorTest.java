@@ -43,9 +43,10 @@ public class WatermarkProcessorTest {
 //                .degree(40.0F)
                 .fontSize(30)
 //                .imageFile(imageFile)
-//                .xMove(30)
-                .alpha(0.6F)
-//                .yMove(30)
+                .degree(60F)
+                .xMove(100)
+                .alpha(0.7F)
+                .yMove(70)
                 .bespread(Boolean.TRUE)
                 .color(Color.red).build();
 

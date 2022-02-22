@@ -2,6 +2,7 @@ package cn.darkjrong.watermark.factory;
 
 import cn.darkjrong.watermark.Converter;
 import cn.darkjrong.watermark.FileTypeUtils;
+import cn.darkjrong.watermark.LicenseUtils;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
@@ -25,6 +26,7 @@ public abstract class AbstractWatermarkProcessor implements WatermarkProcessor {
      * @throws WatermarkException 水印异常
      */
     InputStream getInputStream(File file) throws WatermarkException {
+        LicenseUtils.verificationLicense();
         if (FileTypeUtils.isXls(file)) {
             return IoUtil.toStream(Converter.xls2Xlsx(file));
         }else if (FileTypeUtils.isDoc(file)) {
