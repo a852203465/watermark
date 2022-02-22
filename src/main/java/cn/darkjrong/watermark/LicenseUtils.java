@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class LicenseUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileTypeUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(LicenseUtils.class);
     private static final String LICENSE_XML = "license.xml";
     private static AtomicBoolean license = new AtomicBoolean(Boolean.FALSE);
 
