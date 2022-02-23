@@ -20,9 +20,7 @@ public interface WatermarkProcessor {
      * @param target         目标文件
      * @throws WatermarkException 水印异常
      */
-    default void addWatermark(WatermarkParam watermarkParam, File target) throws WatermarkException {
-
-    }
+    void addWatermark(WatermarkParam watermarkParam, File target) throws WatermarkException;
 
     /**
      * 添加水印
@@ -31,9 +29,7 @@ public interface WatermarkProcessor {
      * @return {@link byte[]}
      * @throws WatermarkException 水印异常
      */
-    default byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
-        return null;
-    }
+    byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException;
 
     /**
      * 支持类型
