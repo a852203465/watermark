@@ -18,7 +18,7 @@ public class ConverterTest {
 
     @Test
     public void doc2Pdf() {
-        FileUtil.writeBytes(Converter.doc2Pdf(new File("F:\\test\\demo.docx")), new File("F:\\test\\demo.pdf"));
+        FileUtil.writeBytes(Converter.word2Pdf(new File("F:\\test\\demo.docx")), new File("F:\\test\\demo.pdf"));
     }
 
 
@@ -32,6 +32,11 @@ public class ConverterTest {
     public void pdf2Word() {
         FileUtil.writeBytes(Converter.pdf2Word(new File("F:\\test\\pdfhtml.pdf")), new File("F:\\test\\pdfhtml.docx"));
     }
+
+
+
+
+
 
 
 

@@ -129,13 +129,13 @@ public class Converter {
     }
 
     /**
-     * doc 转 pdf
+     * word 转 pdf
      *
      * @param wordFile word文件
-     * @return {@link byte[]} 字节数组
+     * @return {@link byte[]}
      * @throws WatermarkException 水印异常
      */
-    public static byte[] doc2Pdf(File wordFile) throws WatermarkException {
+    public static byte[] word2Pdf(File wordFile) throws WatermarkException {
         Assert.isTrue(FileTypeUtils.isWord(wordFile),
                 String.format(ExceptionEnum.THE_FILE_MUST_BE_OF_TYPE_XXX.getValue(), FileType.DOC.name()));
         return convertWord(wordFile, SaveFormat.PDF);
