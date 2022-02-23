@@ -3,7 +3,6 @@ package cn.darkjrong.watermark.factory;
 import cn.darkjrong.watermark.FileTypeUtils;
 import cn.darkjrong.watermark.domain.WatermarkParam;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import com.aspose.pdf.Document;
@@ -86,10 +85,7 @@ public class PdfWatermarkProcessor extends AbstractWatermarkProcessor {
             IoUtil.close(inputStream);
             IoUtil.close(outputStream);
             IoUtil.close(imageInput);
-            try {
-                FileUtil.del(watermarkParam.getImageFile());
-            } catch (Exception ignored) {
-            }
+            delete(watermarkParam.getImageFile());
         }
     }
 }

@@ -55,9 +55,7 @@ public class ExcelWatermarkProcessor extends AbstractWatermarkProcessor {
             throw new WatermarkException(e.getMessage());
         }finally {
             IoUtil.close(outputStream);
-            try {
-                FileUtil.del(watermarkParam.getImageFile());
-            }catch (Exception ignored){}
+            delete(watermarkParam.getImageFile());
         }
     }
 

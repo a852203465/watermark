@@ -38,5 +38,19 @@ public abstract class AbstractWatermarkProcessor implements WatermarkProcessor {
         }
     }
 
+    /**
+     * 删除文件
+     *
+     * @param file 文件
+     */
+    void delete(File file) {
+        try {
+            FileUtil.del(file);
+        }catch (Exception ignored) {}
+    }
+
+
+
+
 
 }

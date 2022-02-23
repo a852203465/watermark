@@ -4,6 +4,7 @@ import cn.darkjrong.watermark.FileTypeUtils;
 import cn.darkjrong.watermark.domain.WatermarkParam;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IoUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,9 +82,8 @@ public class ImageWatermarkProcessor extends AbstractWatermarkProcessor {
 			logger.error("Failed to add watermark to the image {}", e.getMessage());
 			throw new WatermarkException(e.getMessage());
 		}finally {
-			try {
-				FileUtil.del(watermarkParam.getImageFile());
-			}catch (Exception ignored){}
+			IoUtil.close(outputStream);
+			delete(watermarkParam.getImageFile());
 		}
 	}
 }
