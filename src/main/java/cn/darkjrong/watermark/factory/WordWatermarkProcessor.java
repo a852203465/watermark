@@ -42,13 +42,14 @@ public class WordWatermarkProcessor extends AbstractWatermarkProcessor {
         try {
             inputStream = getInputStream(watermarkParam.getFile());
             Document doc = new Document(inputStream);
+            Paragraph watermarkPara = new Paragraph(doc);
             if (!watermarkParam.getBespread()) {
-                Shape shape = buildShape(doc, watermarkParam);
-                Paragraph watermarkPara = new Paragraph(doc);
+                Shape shape = buildShape(doc, watermarkParam.getImageFile(),
+                        500 / 2.0 - watermarkParam.getYMove(),
+                        700 / 2.0 - watermarkParam.getXMove());
                 watermarkPara.appendChild(shape);
                 insertWatermark(doc, watermarkPara);
             }else {
-                Paragraph watermarkPara = new Paragraph(doc);
                 for (int j = 0; j < 500; j = j + watermarkParam.getYMove()) {
                     for (int i = 0; i < 700; i = i + watermarkParam.getXMove()) {
                         Shape waterShape = buildShape(doc, watermarkParam.getImageFile(), j, i);

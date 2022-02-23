@@ -51,12 +51,13 @@ public class PowerPointWatermarkProcessor extends AbstractWatermarkProcessor {
 			int imageHeight = image.getHeight();
 			for (int i=0;i<pptx.getSlideMasters().size();i++) {
 				XSLFSlideMaster slideMaster = pptx.getSlideMasters().get(i);
+				Dimension pageSize = pptx.getPageSize();
+				int srcWidth = pageSize.width;
+				int srcHeight = pageSize.height;
 				if (!watermarkParam.getBespread()) {
-					setAnchor(slideMaster, pictureData, 350, 150, imageWidth, imageHeight);
+					setAnchor(slideMaster, pictureData, srcWidth / 2.0 - watermarkParam.getXMove(),
+							srcHeight / 2.0 - watermarkParam.getYMove(), imageWidth, imageHeight);
 				}else {
-					Dimension pageSize = pptx.getPageSize();
-					int srcWidth = pageSize.width;
-					int srcHeight = pageSize.height;
 					for (double y = 0; y < srcHeight; y = y + imageHeight + watermarkParam.getYMove()) {
 						for (double x = 0; x < srcWidth; x = x + imageWidth + watermarkParam.getXMove()) {
 							setAnchor(slideMaster, pictureData, x, y, imageWidth, imageHeight);

@@ -23,7 +23,7 @@ public class WatermarkProcessorTest {
 //                .xMove(100)
 //                .yMove(100)
                 .alpha(1F)
-                .bespread(Boolean.TRUE)
+                .bespread(Boolean.FALSE)
                 .color(Color.red)
                 .build();
 
@@ -44,10 +44,10 @@ public class WatermarkProcessorTest {
                 .fontSize(30)
 //                .imageFile(imageFile)
                 .degree(60F)
-                .xMove(100)
+//                .xMove(100)
                 .alpha(0.7F)
-                .yMove(70)
-                .bespread(Boolean.TRUE)
+//                .yMove(70)
+                .bespread(Boolean.FALSE)
                 .color(Color.red).build();
 
         WatermarkUtils.addWatermark(param, new File("F:\\test\\1.pdf"));
@@ -90,9 +90,9 @@ public class WatermarkProcessorTest {
                 .degree(20.0F)
                 .fontSize(50)
 //                .imageFile(imageFile)
-                .xMove(200)
+//                .xMove(200)
                 .alpha(0.5F)
-                .yMove(200)
+//                .yMove(200)
                 .bespread(Boolean.FALSE)
                 .color(Color.red).build();
 
@@ -115,7 +115,7 @@ public class WatermarkProcessorTest {
 //                .xMove(30)
                 .alpha(0.1F)
 //                .yMove(30)
-                .bespread(Boolean.TRUE)
+                .bespread(Boolean.FALSE)
                 .color(Color.red).build();
 
 

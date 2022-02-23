@@ -59,8 +59,8 @@ public class ImageWatermarkProcessor extends AbstractWatermarkProcessor {
 			// 水印图片的位置
 			if (!watermarkParam.getBespread()) {
 				g.drawImage(img,
-						srcImage.getWidth(null) - img.getWidth(null) - watermarkParam.getXMove(),
-						srcImage.getHeight(null) - img.getHeight(null) - watermarkParam.getYMove(), null);
+						srcImage.getWidth(null) / 2 - watermarkParam.getXMove(),
+						srcImage.getHeight(null) / 2 - watermarkParam.getYMove(), null);
 			}else {
 				for (int height = watermarkParam.getYMove() + imgIcon.getIconHeight();
 					 height < bufferImg.getHeight();
