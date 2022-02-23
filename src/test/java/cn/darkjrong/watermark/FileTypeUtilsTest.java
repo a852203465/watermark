@@ -14,4 +14,19 @@ public class FileTypeUtilsTest {
 
     }
 
+    @Test
+    public void getMimeType() {
+        String fileType = FileTypeUtils.getFileType(new File("F:\\test\\水印.jpeg"));
+        System.out.println(fileType);
+
+
+
+
+
+
+    }
+
+
+
+
 }

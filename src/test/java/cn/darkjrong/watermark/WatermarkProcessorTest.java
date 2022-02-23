@@ -81,7 +81,7 @@ public class WatermarkProcessorTest {
     @Test
     public void word() throws WatermarkException {
 
-        File file = new File("F:\\doc.doc");
+        File file = new File("F:\\test\\demo.docx");
         File imageFile = new File("F:\\4 - 副本.jpeg");
 
         WatermarkParam param = WatermarkParam.builder()
@@ -90,13 +90,13 @@ public class WatermarkProcessorTest {
                 .degree(20.0F)
                 .fontSize(50)
 //                .imageFile(imageFile)
-//                .xMove(200)
+                .xMove(200)
                 .alpha(0.5F)
-//                .yMove(200)
+                .yMove(200)
                 .bespread(Boolean.FALSE)
                 .color(Color.red).build();
 
-        WatermarkUtils.addWatermark(param);
+        WatermarkUtils.addWatermark(param, new File("F:\\test\\dem121o.docx"));
 
 
     }
@@ -104,13 +104,13 @@ public class WatermarkProcessorTest {
     @Test
     public void ppt() throws WatermarkException {
 
-        File file = new File("F:\\测试\\demo1.pptx");
+        File file = new File("F:\\test\\2021年年度述职汇报.pptx");
 
         WatermarkParam param = WatermarkParam.builder()
                 .file(file)
                 .text("小i机器人")
                 .degree(40.0F)
-                .fontSize(100)
+                .fontSize(50)
 //                .imageFile(imageFile)
 //                .xMove(30)
                 .alpha(0.1F)
@@ -119,7 +119,7 @@ public class WatermarkProcessorTest {
                 .color(Color.red).build();
 
 
-        WatermarkUtils.addWatermark(param);
+        WatermarkUtils.addWatermark(param, new File("F:\\test\\2021年年度述职汇报111.pptx"));
 
 
     }

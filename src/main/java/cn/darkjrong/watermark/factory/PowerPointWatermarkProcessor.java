@@ -2,6 +2,7 @@ package cn.darkjrong.watermark.factory;
 
 import cn.darkjrong.watermark.FileTypeUtils;
 import cn.darkjrong.watermark.domain.WatermarkParam;
+import cn.darkjrong.watermark.enums.PictureTypeEnum;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
@@ -10,7 +11,10 @@ import org.apache.poi.xslf.usermodel.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.*;
 
 /**
@@ -41,13 +45,23 @@ public class PowerPointWatermarkProcessor extends AbstractWatermarkProcessor {
 		try {
 			inputStream = getInputStream(watermarkParam.getFile());
 			pptx = new XMLSlideShow(inputStream);
-			XSLFPictureData pictureData = pptx.addPicture(watermarkParam.getImageFile(), PictureType.PNG);
+			XSLFPictureData pictureData = pptx.addPicture(watermarkParam.getImageFile(), PictureType.forNativeID(PictureTypeEnum.forContentType(FileTypeUtils.getFileType(watermarkParam.getImageFile())).nativeId));
+			BufferedImage image = ImageIO.read(watermarkParam.getImageFile());
+			int imageWidth = image.getWidth();
+			int imageHeight = image.getHeight();
 			for (int i=0;i<pptx.getSlideMasters().size();i++) {
 				XSLFSlideMaster slideMaster = pptx.getSlideMasters().get(i);
-				XSLFSlideLayout[] slideLayouts = slideMaster.getSlideLayouts();
-				for (XSLFSlideLayout slidelayout : slideLayouts) {
-					XSLFPictureShape pictureShape = slidelayout.createPicture(pictureData);
-					pictureShape.setAnchor(new Rectangle2D.Double(20, 20, 640, 400));
+				if (!watermarkParam.getBespread()) {
+					setAnchor(slideMaster, pictureData, 350, 150, imageWidth, imageHeight);
+				}else {
+					Dimension pageSize = pptx.getPageSize();
+					int srcWidth = pageSize.width;
+					int srcHeight = pageSize.height;
+					for (double y = 0; y < srcHeight; y = y + imageHeight + watermarkParam.getYMove()) {
+						for (double x = 0; x < srcWidth; x = x + imageWidth + watermarkParam.getXMove()) {
+							setAnchor(slideMaster, pictureData, x, y, imageWidth, imageHeight);
+						}
+					}
 				}
 			}
 			output = new ByteArrayOutputStream();
@@ -66,4 +80,30 @@ public class PowerPointWatermarkProcessor extends AbstractWatermarkProcessor {
 			delete(watermarkParam.getImageFile());
 		}
 	}
+
+	/**
+	 * 设置锚
+	 *
+	 * @param slideMaster ppt
+	 * @param pictureData 图片数据
+	 * @param x           x
+	 * @param y           y
+	 * @param w           w
+	 * @param h           h
+	 */
+	private void setAnchor(XSLFSlideMaster slideMaster, XSLFPictureData pictureData, double x, double y, double w, double h) {
+		XSLFSlideLayout[] slideLayouts = slideMaster.getSlideLayouts();
+		for (XSLFSlideLayout slidelayout : slideLayouts) {
+			XSLFPictureShape pictureShape = slidelayout.createPicture(pictureData);
+			pictureShape.setAnchor(new Rectangle2D.Double(x, y, w, h));
+		}
+	}
+
+
+
+
+
+
+
+
 }
