@@ -2,7 +2,7 @@ package cn.darkjrong.watermark;
 
 import cn.darkjrong.watermark.domain.WatermarkParam;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.awt.*;
 import java.io.File;
@@ -124,7 +124,29 @@ public class WatermarkProcessorTest {
 
     }
 
+    @Test
+    public void html() throws Exception {
 
+        File file = new File("F:\\test\\pdfhtml.html");
+        File imageFile = new File("F:\\3 - 副本.jpeg");
+
+        WatermarkParam param = WatermarkParam.builder()
+                .file(file)
+                .text("小i机器人")
+//                .degree(40.0F)
+                .fontSize(30)
+//                .imageFile(imageFile)
+                .degree(60F)
+                .xMove(100)
+                .alpha(0.7F)
+                .yMove(70)
+                .bespread(Boolean.TRUE)
+                .color(Color.red).build();
+
+        WatermarkUtils.addWatermark(param, new File("F:\\test\\pdfhtml.pdf"));
+
+
+    }
 
 
 

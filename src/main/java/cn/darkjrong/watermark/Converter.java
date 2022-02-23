@@ -6,6 +6,7 @@ import cn.darkjrong.watermark.exceptions.WatermarkException;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.Assert;
 import com.aspose.cells.Workbook;
+import com.aspose.pdf.HtmlLoadOptions;
 import com.aspose.slides.Presentation;
 import com.aspose.words.Document;
 import com.aspose.words.SaveFormat;
@@ -43,6 +44,36 @@ public class Converter {
             return os.toByteArray();
         } catch (Exception e) {
             logger.error("convertWord {}", e.getMessage());
+            throw new WatermarkException(e.getMessage());
+        }finally {
+            IoUtil.close(os);
+        }
+    }
+
+    /**
+     * 文件类型转换
+     *
+     * @param srcFile    src文件
+     * @param saveFormat {@link SaveFormat} 保存格式
+     * @return {@link byte[]} 字节数组
+     * @throws WatermarkException 水印异常
+     */
+    public static byte[] convertPdf(File srcFile, int saveFormat) throws WatermarkException {
+        LicenseUtils.verificationLicense();
+        ByteArrayOutputStream os = null;
+        try {
+            os = new ByteArrayOutputStream(1024);
+            com.aspose.pdf.Document doc = null;
+            if (FileTypeUtils.isHtml(srcFile)) {
+                HtmlLoadOptions htmlOptions = new HtmlLoadOptions();
+                doc = new com.aspose.pdf.Document(srcFile.getPath(), htmlOptions);
+            }else {
+                doc = new com.aspose.pdf.Document(srcFile.getPath());
+            }
+             doc.save(os, saveFormat);
+            return os.toByteArray();
+        } catch (Exception e) {
+            logger.error("convertPdf {}", e.getMessage());
             throw new WatermarkException(e.getMessage());
         }finally {
             IoUtil.close(os);
@@ -108,6 +139,32 @@ public class Converter {
         Assert.isTrue(FileTypeUtils.isWord(wordFile),
                 String.format(ExceptionEnum.THE_FILE_MUST_BE_OF_TYPE_XXX.getValue(), FileType.DOC.name()));
         return convertWord(wordFile, SaveFormat.PDF);
+    }
+
+    /**
+     * html转pdf
+     *
+     * @param htmlFile html文件
+     * @return {@link byte[]}
+     * @throws WatermarkException 水印异常
+     */
+    public static byte[] html2Pdf(File htmlFile) throws WatermarkException {
+        Assert.isTrue(FileTypeUtils.isHtml(htmlFile),
+                String.format(ExceptionEnum.THE_FILE_MUST_BE_OF_TYPE_XXX.getValue(), FileType.HTML.name()));
+        return convertPdf(htmlFile, com.aspose.pdf.SaveFormat.Pdf);
+    }
+
+    /**
+     * pdf转Word
+     *
+     * @param pdfFile pdf文件
+     * @return {@link byte[]}
+     * @throws WatermarkException 水印异常
+     */
+    public static byte[] pdf2Word(File pdfFile) throws WatermarkException {
+        Assert.isTrue(FileTypeUtils.isPdf(pdfFile),
+                String.format(ExceptionEnum.THE_FILE_MUST_BE_OF_TYPE_XXX.getValue(), FileType.PDF.name()));
+        return convertPdf(pdfFile, com.aspose.pdf.SaveFormat.DocX);
     }
 
     /**

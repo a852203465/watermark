@@ -64,6 +64,7 @@ public class WatermarkUtils {
         File file = watermarkParam.getFile();
         WatermarkProcessor processor = processors.stream().filter(a -> a.supportType(file)).findAny().orElse(null);
         if (ObjectUtil.isNull(processor)) {
+            logger.error("The watermark does not support the file format is: {}", FileTypeUtils.getFileType(file));
             throw new WatermarkException("不支持文件格式为 " + FileTypeUtils.getFileType(file) + " 的水印处理");
         }
         handlerWatermarkFile(watermarkParam);

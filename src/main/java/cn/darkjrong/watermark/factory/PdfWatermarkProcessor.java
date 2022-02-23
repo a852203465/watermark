@@ -30,7 +30,7 @@ public class PdfWatermarkProcessor extends AbstractWatermarkProcessor {
 
     @Override
     public Boolean supportType(File file) {
-        return FileTypeUtils.isPdf(file);
+        return FileTypeUtils.isPdf(file) || FileTypeUtils.isHtml(file);
     }
 
     @Override

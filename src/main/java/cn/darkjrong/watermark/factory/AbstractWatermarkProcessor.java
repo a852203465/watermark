@@ -33,6 +33,8 @@ public abstract class AbstractWatermarkProcessor implements WatermarkProcessor {
             return IoUtil.toStream(Converter.doc2Docx(file));
         }else if (FileTypeUtils.isPpt(file)) {
             return IoUtil.toStream(Converter.ppt2Pptx(file));
+        }else if (FileTypeUtils.isHtml(file)) {
+            return IoUtil.toStream(Converter.html2Pdf(file));
         }else {
             return FileUtil.getInputStream(file);
         }
