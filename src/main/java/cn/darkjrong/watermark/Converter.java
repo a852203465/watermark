@@ -34,7 +34,7 @@ public class Converter {
      * @return {@link byte[]} 字节数组
      * @throws WatermarkException 水印异常
      */
-    public static byte[] convertWord(File srcFile, int saveFormat) throws WatermarkException {
+    private static byte[] convertWord(File srcFile, int saveFormat) throws WatermarkException {
         LicenseUtils.verificationLicense();
         ByteArrayOutputStream os = null;
         try {
@@ -58,7 +58,7 @@ public class Converter {
      * @return {@link byte[]} 字节数组
      * @throws WatermarkException 水印异常
      */
-    public static byte[] convertPdf(File srcFile, int saveFormat) throws WatermarkException {
+    private static byte[] convertPdf(File srcFile, int saveFormat) throws WatermarkException {
         LicenseUtils.verificationLicense();
         ByteArrayOutputStream os = null;
         try {
@@ -88,7 +88,7 @@ public class Converter {
      * @return {@link byte[]} 字节数组
      * @throws WatermarkException 水印异常
      */
-    public static byte[] convertExcel(File srcFile, int saveFormat) throws WatermarkException {
+    private static byte[] convertExcel(File srcFile, int saveFormat) throws WatermarkException {
         LicenseUtils.verificationLicense();
         ByteArrayOutputStream os = null;
         try {
@@ -112,7 +112,7 @@ public class Converter {
      * @return {@link byte[]} 字节数组
      * @throws WatermarkException 水印异常
      */
-    public static byte[] convertPpt(File srcFile, int saveFormat) throws WatermarkException {
+    private static byte[] convertPpt(File srcFile, int saveFormat) throws WatermarkException {
         LicenseUtils.verificationLicense();
         ByteArrayOutputStream os = null;
         try {
@@ -129,6 +129,16 @@ public class Converter {
     }
 
     /**
+     * 获取错误消息
+     *
+     * @param fileType 文件类型
+     * @return {@link String}
+     */
+    private static String getErrorMsg(FileType fileType) {
+        return String.format(ExceptionEnum.THE_FILE_MUST_BE_OF_TYPE_XXX.getValue(), fileType.name());
+    }
+
+    /**
      * word 转 pdf
      *
      * @param wordFile word文件
@@ -136,8 +146,7 @@ public class Converter {
      * @throws WatermarkException 水印异常
      */
     public static byte[] word2Pdf(File wordFile) throws WatermarkException {
-        Assert.isTrue(FileTypeUtils.isWord(wordFile),
-                String.format(ExceptionEnum.THE_FILE_MUST_BE_OF_TYPE_XXX.getValue(), FileType.DOC.name()));
+        Assert.isTrue(FileTypeUtils.isWord(wordFile), getErrorMsg(FileType.DOC));
         return convertWord(wordFile, SaveFormat.PDF);
     }
 
@@ -149,8 +158,7 @@ public class Converter {
      * @throws WatermarkException 水印异常
      */
     public static byte[] html2Pdf(File htmlFile) throws WatermarkException {
-        Assert.isTrue(FileTypeUtils.isHtml(htmlFile),
-                String.format(ExceptionEnum.THE_FILE_MUST_BE_OF_TYPE_XXX.getValue(), FileType.HTML.name()));
+        Assert.isTrue(FileTypeUtils.isHtml(htmlFile), getErrorMsg(FileType.HTML));
         return convertPdf(htmlFile, com.aspose.pdf.SaveFormat.Pdf);
     }
 
@@ -162,8 +170,7 @@ public class Converter {
      * @throws WatermarkException 水印异常
      */
     public static byte[] pdf2Word(File pdfFile) throws WatermarkException {
-        Assert.isTrue(FileTypeUtils.isPdf(pdfFile),
-                String.format(ExceptionEnum.THE_FILE_MUST_BE_OF_TYPE_XXX.getValue(), FileType.PDF.name()));
+        Assert.isTrue(FileTypeUtils.isPdf(pdfFile), getErrorMsg(FileType.PDF));
         return convertPdf(pdfFile, com.aspose.pdf.SaveFormat.DocX);
     }
 
@@ -175,8 +182,7 @@ public class Converter {
      * @throws WatermarkException 水印异常
      */
     public static byte[] doc2Docx(File docFile)  throws WatermarkException {
-        Assert.isTrue(FileTypeUtils.isDoc(docFile),
-                String.format(ExceptionEnum.THE_FILE_MUST_BE_OF_TYPE_XXX.getValue(), FileType.DOC.name()));
+        Assert.isTrue(FileTypeUtils.isDoc(docFile), getErrorMsg(FileType.PDF));
         return convertWord(docFile, SaveFormat.DOCX);
     }
 
@@ -188,8 +194,7 @@ public class Converter {
      * @throws WatermarkException 水印异常
      */
     public static byte[] docx2Doc(File docFile)  throws WatermarkException {
-        Assert.isTrue(FileTypeUtils.isDocx(docFile),
-                String.format(ExceptionEnum.THE_FILE_MUST_BE_OF_TYPE_XXX.getValue(), FileType.DOCX.name()));
+        Assert.isTrue(FileTypeUtils.isDocx(docFile), getErrorMsg(FileType.DOCX));
         return convertWord(docFile, SaveFormat.DOC);
     }
 
@@ -201,8 +206,7 @@ public class Converter {
      * @throws WatermarkException 水印异常
      */
     public static byte[] xls2Xlsx(File docFile)  throws WatermarkException {
-        Assert.isTrue(FileTypeUtils.isXls(docFile),
-                String.format(ExceptionEnum.THE_FILE_MUST_BE_OF_TYPE_XXX.getValue(), FileType.XLS.name()));
+        Assert.isTrue(FileTypeUtils.isXls(docFile), getErrorMsg(FileType.XLS));
         return convertExcel(docFile, com.aspose.cells.SaveFormat.XLSX);
     }
 
@@ -214,8 +218,7 @@ public class Converter {
      * @throws WatermarkException 水印异常
      */
     public static byte[] xlsx2Xls(File docFile)  throws WatermarkException {
-        Assert.isTrue(FileTypeUtils.isXlsx(docFile),
-                String.format(ExceptionEnum.THE_FILE_MUST_BE_OF_TYPE_XXX.getValue(), FileType.XLSX.name()));
+        Assert.isTrue(FileTypeUtils.isXlsx(docFile), getErrorMsg(FileType.XLSX));
         return convertExcel(docFile, com.aspose.cells.SaveFormat.AUTO);
     }
 
@@ -227,8 +230,7 @@ public class Converter {
      * @throws WatermarkException 水印异常
      */
     public static byte[] ppt2Pptx(File docFile)  throws WatermarkException {
-        Assert.isTrue(FileTypeUtils.isPpt(docFile),
-                String.format(ExceptionEnum.THE_FILE_MUST_BE_OF_TYPE_XXX.getValue(), FileType.PPT.name()));
+        Assert.isTrue(FileTypeUtils.isPpt(docFile), getErrorMsg(FileType.PPT));
         return convertPpt(docFile, com.aspose.slides.SaveFormat.Pptx);
     }
 
@@ -240,10 +242,27 @@ public class Converter {
      * @throws WatermarkException 水印异常
      */
     public static byte[] pptx2Ppt(File docFile)  throws WatermarkException {
-        Assert.isTrue(FileTypeUtils.isPptx(docFile),
-                String.format(ExceptionEnum.THE_FILE_MUST_BE_OF_TYPE_XXX.getValue(), FileType.PPTX.name()));
+        Assert.isTrue(FileTypeUtils.isPptx(docFile), getErrorMsg(FileType.PPTX));
         return convertExcel(docFile, com.aspose.slides.SaveFormat.Ppt);
     }
+
+    /**
+     * rtf2pdf
+     *
+     * @param file 文件
+     * @return {@link byte[]}
+     * @throws WatermarkException 水印异常
+     */
+    public static byte[] rtf2Pdf(File file) throws WatermarkException {
+        Assert.isTrue(FileTypeUtils.isRtf(file), getErrorMsg(FileType.RTF));
+        return convertWord(file, SaveFormat.PDF);
+    }
+
+
+
+
+
+
 
 
 

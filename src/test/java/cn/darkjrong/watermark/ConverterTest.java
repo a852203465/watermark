@@ -33,7 +33,10 @@ public class ConverterTest {
         FileUtil.writeBytes(Converter.pdf2Word(new File("F:\\test\\pdfhtml.pdf")), new File("F:\\test\\pdfhtml.docx"));
     }
 
-
+    @Test
+    public void rtf2Pdf() {
+        FileUtil.writeBytes(Converter.rtf2Pdf(new File("F:\\test\\1.rtf")), new File("F:\\test\\rtf.pdf"));
+    }
 
 
 

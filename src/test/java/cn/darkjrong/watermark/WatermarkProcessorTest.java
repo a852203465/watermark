@@ -148,7 +148,28 @@ public class WatermarkProcessorTest {
 
     }
 
+    @Test
+    public void rtf() throws WatermarkException {
 
+        File file = new File("F:\\test\\1.rtf");
+        File imageFile = new File("F:\\4 - 副本.jpeg");
+
+        WatermarkParam param = WatermarkParam.builder()
+                .file(file)
+                .text("小i机器人")
+                .degree(20.0F)
+                .fontSize(50)
+//                .imageFile(imageFile)
+//                .xMove(200)
+                .alpha(0.5F)
+//                .yMove(200)
+                .bespread(Boolean.FALSE)
+                .color(Color.red).build();
+
+        WatermarkUtils.addWatermark(param, new File("F:\\test\\111.rtf"));
+
+
+    }
 
 
 

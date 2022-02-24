@@ -40,6 +40,9 @@ public enum FileType {
     // pdf
     PDF("application/pdf"),
 
+    // rtf
+    RTF("application/rtf"),
+
     // 视频文件
     VIDEO("video/.*"),
 

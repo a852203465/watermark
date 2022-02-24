@@ -194,6 +194,16 @@ public class FileTypeUtils {
 	}
 
 	/**
+	 * 是rtf
+	 *
+	 * @param file 文件
+	 * @return {@link Boolean}
+	 */
+	public static Boolean isRtf(File file) {
+		return checkType(file, FileType.RTF);
+	}
+
+	/**
 	 * 是html
 	 *
 	 * @param file 文件
@@ -234,16 +244,6 @@ public class FileTypeUtils {
 	}
 
 	/**
-	 * 是否是Office文件
-	 *
-	 * @param file 文件
-	 * @return {@link Boolean}
-	 */
-	public static Boolean isOffice(File file){
-		return isDoc(file) || isDocx(file) || isXls(file) || isXlsx(file) || isPpt(file) || isPptx(file);
-	}
-
-	/**
 	 * 是否是音频文件
 	 *
 	 * @param file 文件
@@ -270,7 +270,7 @@ public class FileTypeUtils {
 	 * @return {@link Boolean}
 	 */
 	public static Boolean isWord(File file){
-		return isDocx(file) || isDoc(file);
+		return isDocx(file) || isDoc(file) || isRtf(file);
 	}
 
 	/**
@@ -282,27 +282,6 @@ public class FileTypeUtils {
 	public static Boolean isPpts(File file){
 		return isPpt(file) || isPptx(file);
 	}
-
-	/**
-	 * 是否是 Word 或 Excel 文件
-	 *
-	 * @param file 文件
-	 * @return {@link Boolean}
-	 */
-	public static Boolean isWordOrExcel(File file){
-		return isWord(file) || isExcel(file);
-	}
-
-	/**
-	 * 是否是 office 或 pdf 文件
-	 *
-	 * @param file 文件
-	 * @return {@link Boolean}
-	 */
-	public static Boolean isOfficeOrPdf(File file){
-		return isOffice(file) || isPdf(file);
-	}
-
 
 	/**
 	 * 得到文件类型

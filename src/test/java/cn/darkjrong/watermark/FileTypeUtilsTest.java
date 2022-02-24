@@ -16,16 +16,15 @@ public class FileTypeUtilsTest {
 
     @Test
     public void getMimeType() {
-        String fileType = FileTypeUtils.getFileType(new File("F:\\test\\水印.jpeg"));
+        String fileType = FileTypeUtils.getFileType(new File("F:\\test\\1.rtf"));
         System.out.println(fileType);
-
-
-
-
-
 
     }
 
+    @Test
+    public void isRtf() {
+        System.out.println(FileTypeUtils.isRtf(new File("F:\\test\\1.rtf")));
+    }
 
 
 
