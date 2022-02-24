@@ -2,6 +2,7 @@ package cn.darkjrong.watermark.factory;
 
 import cn.darkjrong.watermark.domain.WatermarkParam;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
+import cn.hutool.core.io.FileUtil;
 
 import java.io.File;
 
@@ -14,13 +15,25 @@ import java.io.File;
 public interface WatermarkProcessor {
 
     /**
+     * 支持类型
+     *
+     * @param file 文件
+     * @return {@link Boolean}
+     */
+    default Boolean supportType(File file) {
+        return Boolean.FALSE;
+    }
+
+    /**
      * 添加水印
      *
      * @param watermarkParam 水印参数
      * @param target         目标文件
      * @throws WatermarkException 水印异常
      */
-    void addWatermark(WatermarkParam watermarkParam, File target) throws WatermarkException;
+    default void addWatermark(WatermarkParam watermarkParam, File target) throws WatermarkException {
+        FileUtil.writeBytes(this.addWatermark(watermarkParam), target);
+    }
 
     /**
      * 添加水印
@@ -31,15 +44,7 @@ public interface WatermarkProcessor {
      */
     byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException;
 
-    /**
-     * 支持类型
-     *
-     * @param file 文件
-     * @return {@link Boolean}
-     */
-    default Boolean supportType(File file) {
-        return Boolean.FALSE;
-    }
+
 
 
 
