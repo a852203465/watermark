@@ -17,7 +17,7 @@ public class LicenseUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(LicenseUtils.class);
     private static final String LICENSE_XML = "license.xml";
-    private static AtomicBoolean license = new AtomicBoolean(Boolean.FALSE);
+    private static final AtomicBoolean LICENSE = new AtomicBoolean(Boolean.FALSE);
 
     static {
         try {
@@ -29,10 +29,10 @@ public class LicenseUtils {
             pdLicense.setLicense(LicenseUtils.class.getClassLoader().getResourceAsStream(LICENSE_XML));
             slideLicense.setLicense(LicenseUtils.class.getClassLoader().getResourceAsStream(LICENSE_XML));
             wordLicense.setLicense(LicenseUtils.class.getClassLoader().getResourceAsStream(LICENSE_XML));
-            license.compareAndSet(Boolean.FALSE, Boolean.TRUE);
+            LICENSE.compareAndSet(Boolean.FALSE, Boolean.TRUE);
         } catch (Exception e) {
-            license.compareAndSet(Boolean.FALSE, Boolean.FALSE);
-            logger.error("License验证失败...  {}", e);
+            LICENSE.compareAndSet(Boolean.FALSE, Boolean.FALSE);
+            logger.error("License验证失败... ", e);
         }
     }
 
@@ -40,7 +40,7 @@ public class LicenseUtils {
      * 验证许可证
      */
     public static void verificationLicense() {
-        Assert.isTrue(license.get(), "License验证不通过...");
+        Assert.isTrue(LICENSE.get(), "License验证不通过...");
     }
 
 
