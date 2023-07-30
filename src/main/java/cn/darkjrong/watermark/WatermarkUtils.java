@@ -51,6 +51,7 @@ public class WatermarkUtils {
      * @throws WatermarkException 水印异常
      */
     public static void addWatermark(WatermarkParam watermarkParam, File outputFile) throws WatermarkException {
+        LicenseUtils.verificationLicense();
         FileUtil.writeBytes(addWatermark(watermarkParam), outputFile);
     }
 
@@ -61,6 +62,7 @@ public class WatermarkUtils {
      * @throws WatermarkException 水印异常
      */
     public static byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
+        LicenseUtils.verificationLicense();
         File file = watermarkParam.getFile();
         WatermarkProcessor processor = processors.stream().filter(a -> a.supportType(file)).findAny().orElse(null);
         if (ObjectUtil.isNull(processor)) {

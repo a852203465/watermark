@@ -3,7 +3,6 @@ package cn.darkjrong.watermark.factory;
 import cn.darkjrong.watermark.FileTypeUtils;
 import cn.darkjrong.watermark.domain.WatermarkParam;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import com.aspose.words.*;
 import org.slf4j.Logger;
@@ -31,12 +30,7 @@ public class WordWatermarkProcessor extends AbstractWatermarkProcessor {
     }
 
     @Override
-    public void addWatermark(WatermarkParam watermarkParam, File target) throws WatermarkException {
-        FileUtil.writeBytes(this.addWatermark(watermarkParam), target);
-    }
-
-    @Override
-    public byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
+    public byte[] watermark(WatermarkParam watermarkParam) throws WatermarkException {
         ByteArrayOutputStream outputStream = null;
         InputStream inputStream = null;
         try {

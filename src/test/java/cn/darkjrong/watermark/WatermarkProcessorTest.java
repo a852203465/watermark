@@ -34,7 +34,7 @@ public class WatermarkProcessorTest {
     @Test
     public void pdf() throws Exception {
 
-        File file = new File("F:\\JavaGuide面试突击最新版.pdf");
+        File file = new File("F:\\技术面试常见智力题.pdf");
         File imageFile = new File("F:\\3 - 副本.jpeg");
 
         WatermarkParam param = WatermarkParam.builder()
@@ -58,7 +58,7 @@ public class WatermarkProcessorTest {
     @Test
     public void excel() throws WatermarkException {
 
-        File file = new File("F:\\test\\demo.xlsx");
+        File file = new File("F:\\1.xlsx");
 
         WatermarkParam param = WatermarkParam.builder()
                 .file(file)
@@ -73,7 +73,7 @@ public class WatermarkProcessorTest {
                 .color(Color.red).build();
 
 
-        WatermarkUtils.addWatermark(param, new File("F:\\test\\dem1o.xlsx"));
+        WatermarkUtils.addWatermark(param, new File("F:\\dem1o.xlsx"));
 
 
     }
@@ -93,7 +93,7 @@ public class WatermarkProcessorTest {
 //                .xMove(200)
                 .alpha(0.5F)
 //                .yMove(200)
-                .bespread(Boolean.FALSE)
+                .bespread(Boolean.TRUE)
                 .color(Color.red).build();
 
         WatermarkUtils.addWatermark(param, new File("F:\\test\\dem121o.docx"));
@@ -104,7 +104,7 @@ public class WatermarkProcessorTest {
     @Test
     public void ppt() throws WatermarkException {
 
-        File file = new File("F:\\test\\2021年年度述职汇报.pptx");
+        File file = new File("F:\\1.pptx");
 
         WatermarkParam param = WatermarkParam.builder()
                 .file(file)
@@ -119,7 +119,7 @@ public class WatermarkProcessorTest {
                 .color(Color.red).build();
 
 
-        WatermarkUtils.addWatermark(param, new File("F:\\test\\2021年年度述职汇报111.pptx"));
+        WatermarkUtils.addWatermark(param, new File("F:\\2021年年度述职汇报111.pptx"));
 
 
     }

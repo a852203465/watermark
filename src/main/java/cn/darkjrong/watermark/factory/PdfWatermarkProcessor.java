@@ -31,12 +31,7 @@ public class PdfWatermarkProcessor extends AbstractWatermarkProcessor {
     }
 
     @Override
-    public void addWatermark(WatermarkParam watermarkParam, File target) throws WatermarkException {
-        FileUtil.writeBytes(this.addWatermark(watermarkParam), target);
-    }
-
-    @Override
-    public byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
+    public byte[] watermark(WatermarkParam watermarkParam) throws WatermarkException {
 
         InputStream inputStream = null;
         ByteArrayOutputStream outputStream = null;

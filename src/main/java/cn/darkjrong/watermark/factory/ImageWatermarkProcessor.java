@@ -31,12 +31,7 @@ public class ImageWatermarkProcessor extends AbstractWatermarkProcessor {
 	}
 
 	@Override
-	public void addWatermark(WatermarkParam watermarkParam, File targetFile) throws WatermarkException {
-		FileUtil.writeBytes(this.addWatermark(watermarkParam), targetFile);
-	}
-
-	@Override
-	public byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
+	public byte[] watermark(WatermarkParam watermarkParam) throws WatermarkException {
 		ByteArrayOutputStream outputStream = null;
 		try {
 			Image srcImage = ImageIO.read(watermarkParam.getFile());
