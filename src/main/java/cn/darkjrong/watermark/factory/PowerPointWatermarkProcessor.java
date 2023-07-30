@@ -2,19 +2,20 @@ package cn.darkjrong.watermark.factory;
 
 import cn.darkjrong.watermark.FileTypeUtils;
 import cn.darkjrong.watermark.domain.WatermarkParam;
-import cn.darkjrong.watermark.enums.PictureTypeEnum;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
-import org.apache.poi.sl.usermodel.PictureData.PictureType;
-import org.apache.poi.xslf.usermodel.*;
+import cn.hutool.core.util.ObjectUtil;
+import com.aspose.slides.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.Dimension2D;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 
 /**
  * ppt处理器
@@ -31,112 +32,68 @@ public class PowerPointWatermarkProcessor extends AbstractWatermarkProcessor {
         return FileTypeUtils.isPpts(file);
     }
 
-//	@Override
-//	protected byte[] watermark(WatermarkParam watermarkParam) throws WatermarkException {
-//
-//		Presentation pres = new Presentation(watermarkParam.getFile().getPath());
-//		ByteArrayOutputStream outputStream = null;
-//
-//		try {
-//			IMasterSlide master = pres.getMasters().get_Item(0);
-//
-//			Point2D.Float center = new Point2D.Float((float) pres.getSlideSize().getSize().getWidth() / 2,
-//					(float) pres.getSlideSize().getSize().getHeight() / 2);
-//
-//			float width = 300;
-//			float height = 300;
-//			float x = (float) center.getX() - width / 2;
-//			float y = (float) center.getY() - height / 2;
-//
-//			// 添加形狀
-//			IAutoShape watermarkShape = master.getShapes().addAutoShape(ShapeType.Rectangle, x, y, width, height);
-//
-//			IPPImage image = pres.getImages().addImage(FileUtil.readBytes(watermarkParam.getImageFile()));
-//
-//			// 設置填充類型
-//			watermarkShape.getFillFormat().setFillType(FillType.Picture);
-//			watermarkShape.getFillFormat().getPictureFillFormat().getPicture().setImage(image);
-//			watermarkShape.getFillFormat().getPictureFillFormat().setPictureFillMode(PictureFillMode.Stretch);
-//			watermarkShape.getLineFormat().getFillFormat().setFillType(FillType.NoFill);
-//
-//			// 鎖定形狀以防止修改
-//			watermarkShape.getAutoShapeLock().setSelectLocked(true);
-//			watermarkShape.getAutoShapeLock().setSizeLocked(true);
-//			watermarkShape.getAutoShapeLock().setTextLocked(true);
-//			watermarkShape.getAutoShapeLock().setPositionLocked(true);
-//			watermarkShape.getAutoShapeLock().setGroupingLocked(true);
-//
-//			outputStream = new ByteArrayOutputStream();
-//			pres.save(outputStream, SaveFormat.Pptx);
-//			return outputStream.toByteArray();
-//		} finally {
-//			IoUtil.close(outputStream);
-//			if (ObjectUtil.isNotNull(pres)) pres.dispose();
-//		}
-//	}
-
     @Override
-    public byte[] watermark(WatermarkParam watermarkParam) throws WatermarkException {
-        XMLSlideShow pptx = null;
-        ByteArrayOutputStream output = null;
-        InputStream inputStream = null;
+    protected byte[] watermark(WatermarkParam watermarkParam) throws WatermarkException {
+
+        Presentation pres = new Presentation(watermarkParam.getFile().getPath());
+        ByteArrayOutputStream outputStream = null;
+        IMasterSlideCollection presMasters = pres.getMasters();
+
         try {
-            inputStream = getInputStream(watermarkParam.getFile());
-            pptx = new XMLSlideShow(inputStream);
-            XSLFPictureData pictureData = pptx.addPicture(watermarkParam.getImageFile(), PictureType.forNativeID(PictureTypeEnum.forContentType(FileTypeUtils.getFileType(watermarkParam.getImageFile())).nativeId));
-            BufferedImage image = ImageIO.read(watermarkParam.getImageFile());
-            int imageWidth = image.getWidth();
-            int imageHeight = image.getHeight();
-            for (int i = 0; i < pptx.getSlideMasters().size(); i++) {
-                XSLFSlideMaster slideMaster = pptx.getSlideMasters().get(i);
-                Dimension pageSize = pptx.getPageSize();
-                int srcWidth = pageSize.width;
-                int srcHeight = pageSize.height;
+            BufferedImage bufferedImage = ImageIO.read(watermarkParam.getImageFile());
+            IPPImage image = pres.getImages().addImage(FileUtil.readBytes(watermarkParam.getImageFile()));
+            int imageWidth = bufferedImage.getWidth();
+            int imageHeight = bufferedImage.getHeight();
+
+            for (IMasterSlide master : presMasters) {
+                Dimension2D dimension2D = pres.getSlideSize().getSize();
+                float srcWidth = Convert.toFloat(dimension2D.getWidth());
+                float srcHeight = Convert.toFloat(dimension2D.getHeight());
                 if (!watermarkParam.getBespread()) {
-                    setAnchor(slideMaster, pictureData, srcWidth / 2.0 - watermarkParam.getXMove(),
-                            srcHeight / 2.0 - watermarkParam.getYMove(), imageWidth, imageHeight);
+                    IAutoShape watermarkShape = master.getShapes().addAutoShape(ShapeType.Rectangle, srcWidth / 2.0F - watermarkParam.getXMove(),
+                            srcHeight / 2.0F - watermarkParam.getYMove(), imageWidth, imageHeight);
+                    setShape(watermarkShape, image);
                 } else {
-                    for (double y = 0; y < srcHeight; y = y + imageHeight + watermarkParam.getYMove()) {
-                        for (double x = 0; x < srcWidth; x = x + imageWidth + watermarkParam.getXMove()) {
-                            setAnchor(slideMaster, pictureData, x, y, imageWidth, imageHeight);
+                    for (float y = 0; y < srcHeight; y = y + imageHeight + watermarkParam.getYMove()) {
+                        for (float x = 0; x < srcWidth; x = x + imageWidth + watermarkParam.getXMove()) {
+                            IAutoShape watermarkShape = master.getShapes().addAutoShape(ShapeType.Rectangle, x, y, imageWidth, imageHeight);
+                            setShape(watermarkShape, image);
                         }
                     }
                 }
             }
-            output = new ByteArrayOutputStream();
-            pptx.write(output);
-            return output.toByteArray();
-        } catch (FileNotFoundException e) {
-            logger.error("No file found {}", e.getMessage());
-            throw new WatermarkException(e.getMessage());
-        } catch (IOException e) {
+            outputStream = new ByteArrayOutputStream();
+            pres.save(outputStream, SaveFormat.Pptx);
+            return outputStream.toByteArray();
+        } catch (Exception e) {
             logger.error("A watermark is incorrectly added to the PPT {}", e.getMessage());
             throw new WatermarkException(e.getMessage());
         } finally {
-            IoUtil.close(output);
-            IoUtil.close(pptx);
-            IoUtil.close(inputStream);
-            delete(watermarkParam.getImageFile());
+            IoUtil.close(outputStream);
+            if (ObjectUtil.isNotNull(pres)) {
+                pres.dispose();
+            }
         }
     }
 
-    /**
-     * 设置锚
-     *
-     * @param slideMaster ppt
-     * @param pictureData 图片数据
-     * @param x           x
-     * @param y           y
-     * @param w           w
-     * @param h           h
-     */
-    private void setAnchor(XSLFSlideMaster slideMaster, XSLFPictureData pictureData, double x, double y, double w, double h) {
-        XSLFSlideLayout[] slideLayouts = slideMaster.getSlideLayouts();
-        for (XSLFSlideLayout slidelayout : slideLayouts) {
-            XSLFPictureShape pictureShape = slidelayout.createPicture(pictureData);
-            pictureShape.setAnchor(new Rectangle2D.Double(x, y, w, h));
-        }
+    private void setShape(IAutoShape shape, IPPImage image) {
+
+        // 設置填充類型
+        shape.getFillFormat().setFillType(FillType.Picture);
+        shape.getFillFormat().getPictureFillFormat().getPicture().setImage(image);
+        shape.getFillFormat().getPictureFillFormat().setPictureFillMode(PictureFillMode.Stretch);
+        shape.getLineFormat().getFillFormat().setFillType(FillType.NoFill);
+
+        // 鎖定形狀以防止修改
+        shape.getAutoShapeLock().setSelectLocked(true);
+        shape.getAutoShapeLock().setSizeLocked(true);
+        shape.getAutoShapeLock().setTextLocked(true);
+        shape.getAutoShapeLock().setPositionLocked(true);
+        shape.getAutoShapeLock().setGroupingLocked(true);
     }
+
+
+
 
 
 }

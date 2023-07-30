@@ -61,7 +61,6 @@ public class WordWatermarkProcessor extends AbstractWatermarkProcessor {
         }finally {
             IoUtil.close(outputStream);
             IoUtil.close(inputStream);
-            delete(watermarkParam.getImageFile());
         }
     }
 

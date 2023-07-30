@@ -30,9 +30,7 @@ public abstract class AbstractWatermarkProcessor implements WatermarkProcessor {
             LicenseUtils.verificationLicense();
             return watermark(watermarkParam);
         }finally {
-            try {
-                FileUtil.del(watermarkParam.getImageFile());
-            }catch (Exception ignored) {}
+            delete(watermarkParam.getImageFile());
         }
     }
 

@@ -115,11 +115,11 @@ public class WatermarkProcessorTest {
 //                .xMove(30)
                 .alpha(0.1F)
 //                .yMove(30)
-                .bespread(Boolean.FALSE)
+                .bespread(Boolean.TRUE)
                 .color(Color.red).build();
 
 
-        WatermarkUtils.addWatermark(param, new File("F:\\2021年年度述职汇报111.pptx"));
+        WatermarkUtils.addWatermark(param, new File("F:\\2.pptx"));
 
 
     }

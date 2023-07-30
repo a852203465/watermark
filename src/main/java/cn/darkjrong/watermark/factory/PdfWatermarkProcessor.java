@@ -80,7 +80,6 @@ public class PdfWatermarkProcessor extends AbstractWatermarkProcessor {
             IoUtil.close(inputStream);
             IoUtil.close(outputStream);
             IoUtil.close(imageInput);
-            delete(watermarkParam.getImageFile());
         }
     }
 }

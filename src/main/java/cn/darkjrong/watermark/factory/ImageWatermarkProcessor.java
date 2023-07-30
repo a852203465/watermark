@@ -78,7 +78,6 @@ public class ImageWatermarkProcessor extends AbstractWatermarkProcessor {
 			throw new WatermarkException(e.getMessage());
 		}finally {
 			IoUtil.close(outputStream);
-			delete(watermarkParam.getImageFile());
 		}
 	}
 }
