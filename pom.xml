@@ -99,35 +99,26 @@
             <version>2.1.0</version>
         </dependency>
         <dependency>
-            <groupId>com.aspose</groupId>
+            <groupId>com.luhuiguo</groupId>
             <artifactId>aspose-words</artifactId>
-            <version>21.11</version>
-            <classifier>jdk17</classifier>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/libs/aspose-words-21.11-jdk17.jar</systemPath>
+            <version>22.12</version>
         </dependency>
         <dependency>
-            <groupId>com.aspose</groupId>
+            <groupId>com.luhuiguo</groupId>
             <artifactId>aspose-slides</artifactId>
-            <version>21.8</version>
-            <classifier>jdk16</classifier>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/libs/aspose-slides-21.8-jdk16.jar</systemPath>
+            <version>22.12</version>
         </dependency>
         <dependency>
-            <groupId>com.aspose</groupId>
+            <groupId>com.luhuiguo</groupId>
             <artifactId>aspose-cells</artifactId>
-            <version>21.8</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/libs/aspose-cells-21.8.jar</systemPath>
+            <version>22.12</version>
         </dependency>
         <dependency>
-            <groupId>com.aspose</groupId>
+            <groupId>com.luhuiguo</groupId>
             <artifactId>aspose-pdf</artifactId>
-            <version>21.8</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/src/main/resources/libs/aspose-pdf-21.8.jar</systemPath>
+            <version>22.12</version>
         </dependency>
+
 
     </dependencies>
 

@@ -10,8 +10,7 @@ import com.aspose.pdf.HtmlLoadOptions;
 import com.aspose.slides.Presentation;
 import com.aspose.words.Document;
 import com.aspose.words.SaveFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -22,9 +21,8 @@ import java.io.File;
  * @author Rong.Jia
  * @date 2021/08/29
  */
+@Slf4j
 public class Converter {
-
-    private static final Logger logger = LoggerFactory.getLogger(Converter.class);
 
     /**
      * 文件类型转换
@@ -43,7 +41,7 @@ public class Converter {
             doc.save(os, saveFormat);
             return os.toByteArray();
         } catch (Exception e) {
-            logger.error("convertWord {}", e.getMessage());
+            log.error("convertWord {}", e.getMessage());
             throw new WatermarkException(e.getMessage());
         }finally {
             IoUtil.close(os);
@@ -54,11 +52,11 @@ public class Converter {
      * 文件类型转换
      *
      * @param srcFile    src文件
-     * @param saveFormat {@link SaveFormat} 保存格式
+     * @param saveFormat {@link com.aspose.pdf.SaveFormat} 保存格式
      * @return {@link byte[]} 字节数组
      * @throws WatermarkException 水印异常
      */
-    private static byte[] convertPdf(File srcFile, int saveFormat) throws WatermarkException {
+    private static byte[] convertPdf(File srcFile, com.aspose.pdf.SaveFormat saveFormat) throws WatermarkException {
         LicenseUtils.verificationLicense();
         ByteArrayOutputStream os = null;
         try {
@@ -73,7 +71,7 @@ public class Converter {
              doc.save(os, saveFormat);
             return os.toByteArray();
         } catch (Exception e) {
-            logger.error("convertPdf {}", e.getMessage());
+            log.error("convertPdf {}", e.getMessage());
             throw new WatermarkException(e.getMessage());
         }finally {
             IoUtil.close(os);
@@ -97,7 +95,7 @@ public class Converter {
             doc.save(os, saveFormat);
             return os.toByteArray();
         } catch (Exception e) {
-            logger.error("convertExcel {}", e.getMessage());
+            log.error("convertExcel {}", e.getMessage());
             throw new WatermarkException(e.getMessage());
         }finally {
             IoUtil.close(os);
@@ -121,7 +119,7 @@ public class Converter {
             pres.save(os, saveFormat);
             return os.toByteArray();
         } catch (Exception e) {
-            logger.error("convertPpt {}", e.getMessage());
+            log.error("convertPpt {}", e.getMessage());
             throw new WatermarkException(e.getMessage());
         }finally {
             IoUtil.close(os);
