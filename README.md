@@ -46,7 +46,8 @@ public class WpsWatermarkProcessor extends AbstractWatermarkProcessor {
 ### 3.1 v1.0
 以文件模式实现 doc, docx, xlsx, xls, ppt, pptx, image, pdf 增加水印
 
-
+### 3.2 v1.1
+增加文件字节传参形式，减少实体文件的存在
 
 
 
