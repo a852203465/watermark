@@ -42,7 +42,9 @@ public class WpsWatermarkProcessor extends AbstractWatermarkProcessor {
         WatermarkUtils.addWatermark(param);
 ```
 
-
+## 3. 版本记录
+### 3.1 v1.0
+以文件模式实现 doc, docx, xlsx, xls, ppt, pptx, image, pdf 增加水印
 
 
 
