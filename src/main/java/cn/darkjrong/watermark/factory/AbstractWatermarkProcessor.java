@@ -7,7 +7,9 @@ import cn.darkjrong.watermark.domain.WatermarkParam;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
+import lombok.extern.slf4j.Slf4j;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 
@@ -15,8 +17,9 @@ import java.io.InputStream;
  * 水印抽象处理器
  *
  * @author Rong.Jia
- * @date 2021/08/12 14:31:18
+ * @date 2024/04/22
  */
+@Slf4j
 public abstract class AbstractWatermarkProcessor implements WatermarkProcessor {
 
     @Override
@@ -26,12 +29,8 @@ public abstract class AbstractWatermarkProcessor implements WatermarkProcessor {
 
     @Override
     public byte[] addWatermark(WatermarkParam watermarkParam) throws WatermarkException {
-        try {
-            LicenseUtils.verificationLicense();
-            return watermark(watermarkParam);
-        }finally {
-            delete(watermarkParam.getImageFile());
-        }
+        LicenseUtils.verificationLicense();
+        return watermark(watermarkParam);
     }
 
     /**
@@ -50,7 +49,7 @@ public abstract class AbstractWatermarkProcessor implements WatermarkProcessor {
      * @return {@link InputStream}
      * @throws WatermarkException 水印异常
      */
-    InputStream getInputStream(File file) throws WatermarkException {
+    protected InputStream getInputStream(File file) throws WatermarkException {
         if (FileTypeUtils.isXls(file)) {
             return IoUtil.toStream(Converter.xls2Xlsx(file));
         }else if (FileTypeUtils.isDoc(file)) {
@@ -65,16 +64,25 @@ public abstract class AbstractWatermarkProcessor implements WatermarkProcessor {
     }
 
     /**
-     * 删除文件
-     *
+     * 获取输入流
+     *s
      * @param file 文件
+     * @return {@link InputStream}
+     * @throws WatermarkException 水印异常
      */
-    void delete(File file) {
-        try {
-            FileUtil.del(file);
-        }catch (Exception ignored) {}
+    protected InputStream getInputStream(byte[] file) throws WatermarkException {
+        if (FileTypeUtils.isXls(file)) {
+            return IoUtil.toStream(Converter.xls2Xlsx(file));
+        }else if (FileTypeUtils.isDoc(file)) {
+            return IoUtil.toStream(Converter.doc2Docx(file));
+        }else if (FileTypeUtils.isPpt(file)) {
+            return IoUtil.toStream(Converter.ppt2Pptx(file));
+        }else if (FileTypeUtils.isHtml(file)) {
+            return IoUtil.toStream(Converter.html2Pdf(file));
+        }else {
+            return new ByteArrayInputStream(file);
+        }
     }
-
 
 
 

@@ -1,15 +1,15 @@
 package cn.darkjrong.watermark.domain;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 
 /**
  * 字体属性
  *
  * @author Rong.Jia
- * @date 2021/08/12 15:05:27
+ * @date 2024/04/22
  */
-@Data
+@Getter
 @Builder
 public class FontAttribute {
 

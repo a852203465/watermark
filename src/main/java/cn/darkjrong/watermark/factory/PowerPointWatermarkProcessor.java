@@ -1,31 +1,30 @@
 package cn.darkjrong.watermark.factory;
 
 import cn.darkjrong.watermark.FileTypeUtils;
+import cn.darkjrong.watermark.domain.ImageFile;
 import cn.darkjrong.watermark.domain.WatermarkParam;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.aspose.slides.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.imageio.ImageIO;
 import java.awt.geom.Dimension2D;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 /**
- * ppt处理器
+ * Power Point 水印处理器
  *
  * @author Rong.Jia
- * @date 2021/08/13 17:45:49
+ * @date 2024/04/22
  */
+@Slf4j
 public class PowerPointWatermarkProcessor extends AbstractWatermarkProcessor {
-
-    private static final Logger logger = LoggerFactory.getLogger(PowerPointWatermarkProcessor.class);
 
     @Override
     public Boolean supportType(File file) {
@@ -33,15 +32,23 @@ public class PowerPointWatermarkProcessor extends AbstractWatermarkProcessor {
     }
 
     @Override
+    public Boolean supportType(byte[] file) {
+        return FileTypeUtils.isPpts(file);
+    }
+
+    @Override
     protected byte[] watermark(WatermarkParam watermarkParam) throws WatermarkException {
 
-        Presentation pres = new Presentation(watermarkParam.getFile().getPath());
-        ByteArrayOutputStream outputStream = null;
+        ByteArrayOutputStream out = null;
+        ByteArrayInputStream in = new ByteArrayInputStream(watermarkParam.getFile().getBytes());
+
+        Presentation pres = new Presentation(in);
         IMasterSlideCollection presMasters = pres.getMasters();
+        ImageFile imageFile = watermarkParam.getImageFile();
 
         try {
-            BufferedImage bufferedImage = ImageIO.read(watermarkParam.getImageFile());
-            IPPImage image = pres.getImages().addImage(FileUtil.readBytes(watermarkParam.getImageFile()));
+            BufferedImage bufferedImage = ImgUtil.toImage(imageFile.getBytes());
+            IPPImage image = pres.getImages().addImage(imageFile.getBytes());
             int imageWidth = bufferedImage.getWidth();
             int imageHeight = bufferedImage.getHeight();
 
@@ -62,14 +69,15 @@ public class PowerPointWatermarkProcessor extends AbstractWatermarkProcessor {
                     }
                 }
             }
-            outputStream = new ByteArrayOutputStream();
-            pres.save(outputStream, SaveFormat.Pptx);
-            return outputStream.toByteArray();
+            out = new ByteArrayOutputStream();
+            pres.save(out, SaveFormat.Pptx);
+            return out.toByteArray();
         } catch (Exception e) {
-            logger.error("A watermark is incorrectly added to the PPT {}", e.getMessage());
+            log.error(String.format("A watermark is incorrectly added to the PPT 【%s】", e.getMessage()), e);
             throw new WatermarkException(e.getMessage());
         } finally {
-            IoUtil.close(outputStream);
+            IoUtil.close(in);
+            IoUtil.close(out);
             if (ObjectUtil.isNotNull(pres)) {
                 pres.dispose();
             }

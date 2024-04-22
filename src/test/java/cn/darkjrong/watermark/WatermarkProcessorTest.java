@@ -1,5 +1,7 @@
 package cn.darkjrong.watermark;
 
+import cn.darkjrong.watermark.domain.ImageFile;
+import cn.darkjrong.watermark.domain.SrcFile;
 import cn.darkjrong.watermark.domain.WatermarkParam;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
 import org.junit.jupiter.api.Test;
@@ -12,34 +14,40 @@ public class WatermarkProcessorTest {
     @Test
     public void image() throws WatermarkException {
 
-        File file = new File("F:\\test\\1.jpg");
-        File imageFile = new File("F:\\1 - 副本.jpeg");
+        File file = new File("F:/1.jpg");
+//        File imageFile = new File("F:\\1 - 副本.jpeg");
+
+        SrcFile srcFile = SrcFile.builder().file(file).build();
+        ImageFile imageFile = ImageFile.builder().text("小i机器人").build();
 
         WatermarkParam param = WatermarkParam.builder()
-                .file(file)
-                .text("小i机器人")
+                .file(srcFile)
+                .imageFile(imageFile)
                 .degree(30F)
 //                .imageFile(imageFile)
 //                .xMove(100)
 //                .yMove(100)
                 .alpha(1F)
-                .bespread(Boolean.FALSE)
+                .bespread(Boolean.TRUE)
                 .color(Color.red)
                 .build();
 
-        WatermarkUtils.addWatermark(param, new File("F:\\test\\tesa1.jpeg"));
+        WatermarkUtils.addWatermark(param, new File("F:/tesa1.jpeg"));
 
     }
 
     @Test
     public void pdf() throws Exception {
 
-        File file = new File("F:\\技术面试常见智力题.pdf");
-        File imageFile = new File("F:\\3 - 副本.jpeg");
+        File file = new File("F:\\字节跳动Java面试手册（第一期）.pdf");
+//        File imageFile = new File("F:\\3 - 副本.jpeg");
+
+        SrcFile srcFile = SrcFile.builder().file(file).build();
+        ImageFile imageFile = ImageFile.builder().text("小i机器人").build();
 
         WatermarkParam param = WatermarkParam.builder()
-                .file(file)
-                .text("小i机器人")
+                .file(srcFile)
+                .imageFile(imageFile)
 //                .degree(40.0F)
                 .fontSize(30)
 //                .imageFile(imageFile)
@@ -47,7 +55,7 @@ public class WatermarkProcessorTest {
 //                .xMove(100)
                 .alpha(0.7F)
 //                .yMove(70)
-                .bespread(Boolean.FALSE)
+                .bespread(Boolean.TRUE)
                 .color(Color.red).build();
 
         WatermarkUtils.addWatermark(param, new File("F:\\1.pdf"));
@@ -58,11 +66,14 @@ public class WatermarkProcessorTest {
     @Test
     public void excel() throws WatermarkException {
 
-        File file = new File("F:\\1.xlsx");
+        File file = new File("F:\\1.xls");
+
+        SrcFile srcFile = SrcFile.builder().file(file).build();
+        ImageFile imageFile = ImageFile.builder().text("小i机器人").build();
 
         WatermarkParam param = WatermarkParam.builder()
-                .file(file)
-                .text("小i机器人")
+                .file(srcFile)
+                .imageFile(imageFile)
                 .degree(40.0F)
                 .fontSize(100)
 //                .imageFile(imageFile)
@@ -81,22 +92,25 @@ public class WatermarkProcessorTest {
     @Test
     public void word() throws WatermarkException {
 
-        File file = new File("F:\\test\\demo.docx");
-        File imageFile = new File("F:\\4 - 副本.jpeg");
+        File file = new File("F:/demo.docx");
+//        File imageFile = new File("F:\\4 - 副本.jpeg");
+
+        SrcFile srcFile = SrcFile.builder().file(file).build();
+        ImageFile imageFile = ImageFile.builder().text("小i机器人").build();
 
         WatermarkParam param = WatermarkParam.builder()
-                .file(file)
-                .text("小i机器人")
+                .file(srcFile)
+                .imageFile(imageFile)
                 .degree(20.0F)
                 .fontSize(50)
 //                .imageFile(imageFile)
 //                .xMove(200)
                 .alpha(0.5F)
 //                .yMove(200)
-                .bespread(Boolean.TRUE)
+                .bespread(Boolean.FALSE)
                 .color(Color.red).build();
 
-        WatermarkUtils.addWatermark(param, new File("F:\\test\\dem121o.docx"));
+        WatermarkUtils.addWatermark(param, new File("F:\\dem121o.docx"));
 
 
     }
@@ -104,11 +118,14 @@ public class WatermarkProcessorTest {
     @Test
     public void ppt() throws WatermarkException {
 
-        File file = new File("F:\\1.pptx");
+        File file = new File("F:\\1.ppt");
+
+        SrcFile srcFile = SrcFile.builder().file(file).build();
+        ImageFile imageFile = ImageFile.builder().text("小i机器人").build();
 
         WatermarkParam param = WatermarkParam.builder()
-                .file(file)
-                .text("小i机器人")
+                .file(srcFile)
+                .imageFile(imageFile)
                 .degree(40.0F)
                 .fontSize(50)
 //                .imageFile(imageFile)
@@ -119,7 +136,7 @@ public class WatermarkProcessorTest {
                 .color(Color.red).build();
 
 
-        WatermarkUtils.addWatermark(param, new File("F:\\2.pptx"));
+        WatermarkUtils.addWatermark(param, new File("F:\\2.ppt"));
 
 
     }
@@ -127,12 +144,15 @@ public class WatermarkProcessorTest {
     @Test
     public void html() throws Exception {
 
-        File file = new File("F:\\test\\pdfhtml.html");
-        File imageFile = new File("F:\\3 - 副本.jpeg");
+        File file = new File("F:\\pdfhtml.html");
+//        File imageFile = new File("F:\\3 - 副本.jpeg");
+
+        SrcFile srcFile = SrcFile.builder().file(file).build();
+        ImageFile imageFile = ImageFile.builder().text("小i机器人").build();
 
         WatermarkParam param = WatermarkParam.builder()
-                .file(file)
-                .text("小i机器人")
+                .file(srcFile)
+                .imageFile(imageFile)
 //                .degree(40.0F)
                 .fontSize(30)
 //                .imageFile(imageFile)
@@ -143,7 +163,7 @@ public class WatermarkProcessorTest {
                 .bespread(Boolean.TRUE)
                 .color(Color.red).build();
 
-        WatermarkUtils.addWatermark(param, new File("F:\\test\\pdfhtml.pdf"));
+        WatermarkUtils.addWatermark(param, new File("F:\\pdfhtml.pdf"));
 
 
     }
@@ -151,12 +171,15 @@ public class WatermarkProcessorTest {
     @Test
     public void rtf() throws WatermarkException {
 
-        File file = new File("F:\\test\\1.rtf");
-        File imageFile = new File("F:\\4 - 副本.jpeg");
+        File file = new File("F:\\1.rtf");
+//        File imageFile = new File("F:\\4 - 副本.jpeg");
+
+        SrcFile srcFile = SrcFile.builder().file(file).build();
+        ImageFile imageFile = ImageFile.builder().text("小i机器人").build();
 
         WatermarkParam param = WatermarkParam.builder()
-                .file(file)
-                .text("小i机器人")
+                .file(srcFile)
+                .imageFile(imageFile)
                 .degree(20.0F)
                 .fontSize(50)
 //                .imageFile(imageFile)
@@ -166,7 +189,7 @@ public class WatermarkProcessorTest {
                 .bespread(Boolean.FALSE)
                 .color(Color.red).build();
 
-        WatermarkUtils.addWatermark(param, new File("F:\\test\\111.rtf"));
+        WatermarkUtils.addWatermark(param, new File("F:\\111.rtf"));
 
 
     }

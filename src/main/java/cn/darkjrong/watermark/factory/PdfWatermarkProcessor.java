@@ -1,29 +1,29 @@
 package cn.darkjrong.watermark.factory;
 
 import cn.darkjrong.watermark.FileTypeUtils;
+import cn.darkjrong.watermark.domain.ImageFile;
+import cn.darkjrong.watermark.domain.SrcFile;
 import cn.darkjrong.watermark.domain.WatermarkParam;
 import cn.darkjrong.watermark.exceptions.WatermarkException;
-import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.img.ImgUtil;
 import cn.hutool.core.io.IoUtil;
 import com.aspose.pdf.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
-import javax.imageio.ImageIO;
 import java.awt.Image;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStream;
 
 /**
- * pdf处理器
+ * PDF水印处理器
  *
  * @author Rong.Jia
- * @date 2021/08/13 10:06:40
+ * @date 2024/04/22
  */
+@Slf4j
 public class PdfWatermarkProcessor extends AbstractWatermarkProcessor {
-
-    private static final Logger logger = LoggerFactory.getLogger(PdfWatermarkProcessor.class);
 
     @Override
     public Boolean supportType(File file) {
@@ -31,18 +31,25 @@ public class PdfWatermarkProcessor extends AbstractWatermarkProcessor {
     }
 
     @Override
-    public byte[] watermark(WatermarkParam watermarkParam) throws WatermarkException {
+    public Boolean supportType(byte[] file) {
+        return FileTypeUtils.isPdf(file) || FileTypeUtils.isHtml(file);
+    }
 
+    @Override
+    public byte[] watermark(WatermarkParam watermarkParam) throws WatermarkException {
         InputStream inputStream = null;
         ByteArrayOutputStream outputStream = null;
         InputStream imageInput = null;
+        SrcFile file = watermarkParam.getFile();
+        ImageFile imageFile = watermarkParam.getImageFile();
         try {
-            inputStream = getInputStream(watermarkParam.getFile());
+            inputStream = getInputStream(file.getBytes());
+            imageInput = new ByteArrayInputStream(imageFile.getBytes());
+
             Document pdfDocument = new Document(inputStream);
-            imageInput = FileUtil.getInputStream(watermarkParam.getImageFile());
             ImageStamp imageStamp = new ImageStamp(imageInput);
 
-            Image image = ImageIO.read(watermarkParam.getImageFile());
+            Image image = ImgUtil.toImage(imageFile.getBytes());
 
             //设置水印背景的宽高，还有透明度
             imageStamp.setHeight(image.getWidth(null));
@@ -74,7 +81,7 @@ public class PdfWatermarkProcessor extends AbstractWatermarkProcessor {
             pdfDocument.save(outputStream);
             return outputStream.toByteArray();
         } catch (Exception e) {
-            logger.error("Description Failed to add watermark to PDF :  {}", e.getMessage());
+            log.error(String.format("Description Failed to add watermark to PDF 【%s】", e.getMessage()), e);
             throw new WatermarkException(e.getMessage());
         } finally {
             IoUtil.close(inputStream);

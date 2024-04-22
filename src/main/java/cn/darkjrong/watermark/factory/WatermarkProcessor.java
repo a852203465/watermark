@@ -25,6 +25,16 @@ public interface WatermarkProcessor {
     }
 
     /**
+     * 支持类型
+     *
+     * @param file 文件
+     * @return {@link Boolean}
+     */
+    default Boolean supportType(byte[] file) {
+        return Boolean.FALSE;
+    }
+
+    /**
      * 添加水印
      *
      * @param watermarkParam 水印参数

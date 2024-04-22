@@ -6,9 +6,10 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.img.ImgUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.IORuntimeException;
 import cn.hutool.core.io.IoUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -26,10 +27,10 @@ import java.util.Date;
  * @author Rong.Jia
  * @date 2021/08/29
  */
+@Slf4j
 public class ImageUtils {
 
     private static final String IMAGE_FORMAT = "png";
-    private static final Logger logger = LoggerFactory.getLogger(ImageUtils.class);
 
     /**
      * 根据指定的文本创建图片
@@ -42,8 +43,28 @@ public class ImageUtils {
      * @return {@link File}
      * @throws WatermarkException 水印异常
      */
-    public static File createImage(String text, Color color,
-                                   Integer fontSize, Float degree, Float alpha) throws WatermarkException {
+    public static File createImage(String text, Color color, Integer fontSize, Float degree, Float alpha) throws WatermarkException {
+        byte[] imageByte = createImageByte(text, color, fontSize, degree, alpha);
+        try {
+            return FileUtil.writeBytes(imageByte, createFile());
+        } catch (Exception e) {
+            log.error(String.format("************,createImage(),Exception【%s】", e.getMessage()), e);
+            throw new WatermarkException(e.getMessage());
+        }
+    }
+
+    /**
+     * 根据指定的文本创建图片
+     *
+     * @param text     文本
+     * @param color    文字颜色
+     * @param fontSize 字体大小
+     * @param alpha    透明度
+     * @param degree   旋转角度
+     * @return {@link byte[]} 图像字节数组
+     * @throws WatermarkException 水印异常
+     */
+    public static byte[] createImageByte(String text, Color color, Integer fontSize, Float degree, Float alpha) throws WatermarkException {
 
         Font font = new Font("宋体", Font.PLAIN, fontSize);
         FontAttribute fontAttribute = getWidthAndHeight(text, font);
@@ -77,11 +98,11 @@ public class ImageUtils {
         g.dispose();
 
         try {
-            File imageFile = createFile();
-            ImgUtil.rotate(image, Convert.toInt(degree), imageFile);
-            return imageFile;
+            Image rotate = ImgUtil.rotate(image, Convert.toInt(degree));
+            return ImgUtil.toBytes(rotate, ImgUtil.IMAGE_TYPE_PNG);
         } catch (Exception e) {
-            throw new WatermarkException("IOException", e);
+            log.error(String.format("************,createImageByte(),Exception【%s】", e.getMessage()), e);
+            throw new WatermarkException(e.getMessage());
         }
     }
 
@@ -92,17 +113,37 @@ public class ImageUtils {
      * @param degree    旋转角度
      * @param alpha     透明度
      * @return {@link File}
+     * @throws WatermarkException 水印异常
      */
     public static File createImage(File imageFile, Float degree, Float alpha) throws WatermarkException {
+        try {
+            byte[] bytes = createImage(FileUtil.readBytes(imageFile), degree, alpha);
+            return FileUtil.writeBytes(bytes, imageFile);
+        } catch (Exception e) {
+            log.error(String.format("************,createImage(),Exception【%s】", e.getMessage()), e);
+            throw new WatermarkException(e.getMessage());
+        }
+    }
 
+    /**
+     * 创建图像
+     *
+     * @param imageFile 图像文件
+     * @param degree    旋转角度
+     * @param alpha     透明度
+     * @return {@link byte[]} 图像字节数组
+     * @throws WatermarkException 水印异常
+     */
+    public static byte[] createImage(byte[] imageFile, Float degree, Float alpha) throws WatermarkException {
         ByteArrayInputStream alphaInput = null;
         ByteArrayInputStream rotateInput = null;
-
         try {
             byte[] rotate = rotate(imageFile, degree);
             byte[] alphaBytes = transferAlpha(rotateInput = new ByteArrayInputStream(rotate), 1);
-            changeAlpha(alphaInput = new ByteArrayInputStream(alphaBytes), imageFile, Convert.toInt(alpha));
-            return imageFile;
+            return changeAlpha(alphaInput = new ByteArrayInputStream(alphaBytes), Convert.toInt(alpha));
+        } catch (Exception e) {
+            log.error(String.format("************,createImage(),Exception【%s】", e.getMessage()), e);
+            throw new WatermarkException(e.getMessage());
         } finally {
             IoUtil.close(rotateInput);
             IoUtil.close(alphaInput);
@@ -145,12 +186,32 @@ public class ImageUtils {
     /**
      * 调节图片透明度（支持透明背景）
      *
-     * @param inputStream    源路径
-     * @param targetFile 生成路径
-     * @param alpha      透明度   （0全透明---10不透明）
-     * @throws IOException IO异常
+     * @param inputStream 源路径
+     * @param targetFile  生成路径
+     * @param alpha       透明度   （0全透明---10不透明）
+     * @return {@link File}
+     * @throws WatermarkException 水印异常
      */
-    public static void changeAlpha(InputStream inputStream, File targetFile, int alpha) throws WatermarkException {
+    public static File changeAlpha(InputStream inputStream, File targetFile, int alpha) throws WatermarkException {
+        try {
+            byte[] bytes = changeAlpha(inputStream, alpha);
+            FileUtil.writeBytes(bytes, targetFile);
+            return targetFile;
+        } catch (IORuntimeException e) {
+            log.error(String.format("************,changeAlpha(),Exception【%s】", e.getMessage()), e);
+            throw new WatermarkException(e.getMessage());
+        }
+    }
+
+    /**
+     * 调节图片透明度（支持透明背景）
+     *
+     * @param inputStream 源路径
+     * @param alpha       透明度   （0全透明---10不透明）
+     * @return {@link byte[]} 图像字节数组
+     * @throws WatermarkException 水印异常
+     */
+    public static byte[] changeAlpha(InputStream inputStream, int alpha) throws WatermarkException {
 
         //检查透明度是否越界
         if (alpha < 0) {
@@ -159,6 +220,7 @@ public class ImageUtils {
             alpha = 10;
         }
 
+        ByteArrayOutputStream out = null;
         try {
             BufferedImage image = ImageIO.read(inputStream);
             int weight = image.getWidth();
@@ -181,9 +243,11 @@ public class ImageUtils {
             g2.setComposite(AlphaComposite.SrcIn);
             g2.drawImage(image, 0, 0, weight, height, null);
             g2.dispose();
-            ImageIO.write(output, IMAGE_FORMAT, targetFile);
+            out = new ByteArrayOutputStream();
+            ImageIO.write(output, IMAGE_FORMAT, out);
+            return out.toByteArray();
         } catch (IOException e) {
-            logger.error("changeAlpha {}", e.getMessage());
+            log.error(String.format("************,changeAlpha(),Exception【%s】", e.getMessage()), e);
             throw new WatermarkException(e.getMessage());
         }
     }
@@ -194,15 +258,32 @@ public class ImageUtils {
      * @param srcFile 原始图
      * @param angel   旋转角度
      * @return 结果图字节数据组
-     * @throws WatermarkException 水印的例外
+     * @throws WatermarkException 水印异常
      */
     public static byte[] rotate(File srcFile, Float angel) throws WatermarkException {
+        try {
+            return rotate(FileUtil.readBytes(srcFile), angel);
+        } catch (IORuntimeException e) {
+            log.error(String.format("************,rotate(),Exception【%s】", e.getMessage()), e);
+            throw new WatermarkException(e.getMessage());
+        }
+    }
 
+    /**
+     * 图片旋转
+     *
+     * @param srcFile 原始图
+     * @param angel   旋转角度
+     * @return 结果图字节数据组
+     * @throws WatermarkException 水印异常
+     */
+    public static byte[] rotate(byte[] srcFile, Float angel) throws WatermarkException {
         ByteArrayOutputStream out = null;
-
+        ByteArrayInputStream in = null;
         try {
             out = new ByteArrayOutputStream(16 * 1024);
-            Image src = ImageIO.read(srcFile);
+            in = new ByteArrayInputStream(srcFile);
+            Image src = ImageIO.read(in);
             int srcWidth = src.getWidth(null);
             int srcHeight = src.getHeight(null);
             Rectangle rectDes = calcRotatedSize(new Rectangle(new Dimension(srcWidth, srcHeight)), angel);
@@ -216,10 +297,11 @@ public class ImageUtils {
             ImageIO.write(res, IMAGE_FORMAT, out);
             return out.toByteArray();
         } catch (IOException e) {
-            logger.error("rotate {}", e.getMessage());
+            log.error(String.format("************,rotate(),Exception【%s】", e.getMessage()), e);
             throw new WatermarkException(e.getMessage());
         } finally {
             IoUtil.close(out);
+            IoUtil.close(in);
         }
     }
 
@@ -259,7 +341,7 @@ public class ImageUtils {
      * @param input 原始图
      * @param color   颜色
      * @return 结果图字节数据组
-     * @throws WatermarkException 水印的例外
+     * @throws WatermarkException 水印异常
      */
     public static byte[] transferAlpha(InputStream input, int color) throws WatermarkException {
 
@@ -287,7 +369,7 @@ public class ImageUtils {
             ImageIO.write(bufferedImage, IMAGE_FORMAT, out);
             return out.toByteArray();
         } catch (IOException e) {
-            logger.error("transferAlpha {}", e.getMessage());
+            log.error(String.format("************,transferAlpha(),Exception【%s】", e.getMessage()), e);
             throw new WatermarkException(e.getMessage());
         }finally {
             IoUtil.close(out);
