@@ -25,11 +25,14 @@ public class WpsWatermarkProcessor extends AbstractWatermarkProcessor {
     静态调用WatermarkUtils.addWatermark()即可;
 ```java
         File file = new File("F:\\图片_3 - 副本.jpg");
-        File imageFile = new File("F:\\1 - 副本.jpeg");
+//        File imageFile = new File("F:\\1 - 副本.jpeg");
 
+        SrcFile srcFile = SrcFile.builder().file(file).build();
+        ImageFile imageFile = ImageFile.builder().text("小i机器人").build();
+        
         WatermarkParam param = WatermarkParam.builder()
-                .file(file)
-                .text("小i机器人")
+                .file(srcFile)
+                .imageFile(imageFile)`
                 .degree(30F)
 //                .imageFile(imageFile)
 //                .xMove(100)
