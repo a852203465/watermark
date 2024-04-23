@@ -118,8 +118,8 @@ public class WatermarkUtils {
         }
 
         if (ArrayUtil.isEmpty(byteFile)) {
-            log.error("************,getFile(),待加水印的文件为空,请检查");
-            throw new WatermarkException("待加水印的文件为空,请检查");
+            log.error("************,getFile(),待加水印的文件不存在或者文件内容为空,请检查");
+            throw new WatermarkException("待加水印的文件不存在或者文件内容为空,请检查");
         }
         return SrcFile.builder().bytes(byteFile).build();
     }

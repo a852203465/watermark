@@ -66,7 +66,7 @@ public class WatermarkProcessorTest {
     @Test
     public void excel() throws WatermarkException {
 
-        File file = new File("F:\\1.xls");
+        File file = new File("F:\\1.xlsx");
 
         SrcFile srcFile = SrcFile.builder().file(file).build();
         ImageFile imageFile = ImageFile.builder().text("小i机器人").build();
