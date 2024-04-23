@@ -40,9 +40,9 @@ public class WatermarkUtils {
      * @param processor 处理器
      */
     public static void addProcessor(WatermarkProcessor processor) {
-            if (ObjectUtil.isNotNull(processor)) {
-                processors.add(processor);
-            }
+        if (ObjectUtil.isNotNull(processor)) {
+            processors.add(processor);
+        }
     }
 
     /**
@@ -76,7 +76,7 @@ public class WatermarkUtils {
             throw new WatermarkException("不支持文件格式为 " + fileType + " 的水印处理");
         }
         ImageFile imageFile = handlerWatermarkFile(watermarkParam);
-        WatermarkParam param =  WatermarkParam.builder()
+        WatermarkParam param = WatermarkParam.builder()
                 .alpha(watermarkParam.getAlpha())
                 .fontSize(watermarkParam.getFontSize())
                 .bespread(watermarkParam.getBespread())
@@ -109,7 +109,7 @@ public class WatermarkUtils {
         if (FileUtil.exist(file)) {
             try {
                 byteFile = FileUtil.readBytes(file);
-            }catch (Exception e) {
+            } catch (Exception e) {
                 log.error("****************,getFile(),文件【{}】读取异常 {}", file.getName(), e.getMessage());
             }
         }
@@ -133,12 +133,8 @@ public class WatermarkUtils {
         if (FileUtil.exist(file)) {
             try {
                 byteFile = ImageUtils.createImage(FileUtil.readBytes(file), watermarkParam.getDegree(), watermarkParam.getAlpha());
-            }catch (Exception e) {
+            } catch (Exception e) {
                 log.error("****************,getImageFile(),文件【{}】读取异常 {}", file.getName(), e.getMessage());
-            }finally {
-                try {
-                    FileUtil.del(file);
-                }catch (Exception ignored) {}
             }
         }
         if (ArrayUtil.isNotEmpty(bytes)) {
@@ -155,34 +151,6 @@ public class WatermarkUtils {
         }
         return byteFile;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 }
